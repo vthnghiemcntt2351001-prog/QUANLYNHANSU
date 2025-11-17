@@ -1,0 +1,171 @@
+@{
+    ViewData["Title"] = "Lương cá nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+   .salary-container {
+    max-width: 1200px; /* tăng nhẹ độ rộng khung */
+    margin: 20px auto; /* tăng khoảng cách trên dưới */
+    background: #fff;
+    border-radius: 16px; /* bo góc mềm hơn */
+    padding: 40px 50px; /* tăng padding cho cân xứng */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    animation: fadeIn 0.5s ease;
+}
+
+/* Tiêu đề và nút nằm xa nhau hơn */
+.salary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+/* Lưới các thẻ lương giãn đều và khoảng cách hợp lý */
+.salary-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 30px; /* tăng khoảng cách giữa các thẻ */
+    margin-bottom: 40px;
+}
+
+/* Thẻ lương */
+.card-salary {
+    background: linear-gradient(135deg, #0d6efd, #00b4d8);
+    color: white;
+    border-radius: 12px;
+    padding: 30px 20px; /* tăng padding dọc và ngang */
+    text-align: center;
+    transition: 0.3s;
+    min-height: 130px; /* giữ chiều cao đều giữa các thẻ */
+}
+
+.card-salary h5 {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* Bảng chi tiết lương */
+.salary-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.salary-detail-table th {
+    background-color: #0d6efd;
+    color: white;
+    text-align: center;
+    padding: 12px 10px;
+}
+
+.salary-detail-table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+/* Ghi chú */
+.note {
+    background-color: #f8f9fa;
+    padding: 20px 25px;
+    border-radius: 10px;
+    border-left: 5px solid #0d6efd;
+    line-height: 1.6;
+}
+
+</style>
+
+<div class="salary-container">
+    <div class="salary-header">
+        <h2>💰 Lương cá nhân</h2>
+        <button class="btn btn-outline-primary" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i> Làm mới</button>
+    </div>
+
+    <div class="salary-summary">
+        <div class="card-salary">
+            <h5>Lương cơ bản</h5>
+            <h3 id="baseSalary">10,000,000 ₫</h3>
+        </div>
+        <div class="card-salary">
+            <h5>Thưởng</h5>
+            <h3 id="bonus">2,000,000 ₫</h3>
+        </div>
+        <div class="card-salary">
+            <h5>Phụ cấp</h5>
+            <h3 id="allowance">1,000,000 ₫</h3>
+        </div>
+        <div class="card-salary">
+            <h5>Thực nhận</h5>
+            <h3 id="totalSalary">13,000,000 ₫</h3>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="text-primary mb-3">📅 Chi tiết lương tháng 11/2025</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped salary-detail-table">
+                    <thead>
+                        <tr>
+                            <th>Ngày</th>
+                            <th>Giờ làm</th>
+                            <th>Giờ tăng ca</th>
+                            <th>Đi trễ</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salaryDetailList">
+                        <tr>
+                            <td>01/11/2025</td>
+                            <td>8</td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>02/11/2025</td>
+                            <td>8</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>Đi trễ 10 phút</td>
+                        </tr>
+                        <tr>
+                            <td>03/11/2025</td>
+                            <td>8</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="note mt-3">
+        <p><strong>💡 Ghi chú:</strong> Lương thực nhận = Lương cơ bản + Thưởng + Phụ cấp - Khấu trừ (nếu có).</p>
+    </div>
+</div>
+
+<script>
+    document.getElementById("btnRefresh").addEventListener("click", function () {
+        showToast("🔄 Dữ liệu lương đã được cập nhật!", "success");
+    });
+
+    function showToast(message, type) {
+        const toastEl = document.createElement("div");
+        toastEl.className = "toast align-items-center text-white border-0 position-fixed top-0 end-0 m-3";
+        toastEl.style.backgroundColor = type === "success" ? "#198754" : "#dc3545";
+        toastEl.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>`;
+        document.body.appendChild(toastEl);
+
+        const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+        toast.show();
+        toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
+    }
+</script>

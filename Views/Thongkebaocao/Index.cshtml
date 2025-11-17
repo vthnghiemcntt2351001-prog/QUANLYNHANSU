@@ -1,0 +1,80 @@
+@{
+ViewData["Title"] = "Báo Cáo Thống Kê Nhân Sự";
+Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<!-- CSS -->
+
+<link rel="stylesheet" href="~/css/Thongkebaocao.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<header class="header">
+    <h1>📊 Báo Cáo Thống Kê Nhân Sự</h1>
+    <button id="refreshBtn"><i class="fas fa-sync"></i> Làm mới</button>
+  </header>
+
+  <main class="dashboard">
+    <!-- Thống kê tổng quan -->
+    <section class="stats">
+      <div class="card">
+        <h3>Tổng Nhân Viên</h3>
+        <p id="totalEmployees">0</p>
+      </div>
+      <div class="card">
+        <h3>Nhân Viên Mới</h3>
+        <p id="newEmployees">0</p>
+      </div>
+      <div class="card">
+        <h3>Số Phòng Ban</h3>
+        <p id="departments">0</p>
+      </div>
+      <div class="card">
+        <h3>Tỷ Lệ Nghỉ Việc</h3>
+        <p id="resignRate">0%</p>
+      </div>
+    </section>
+
+    <!-- Biểu đồ -->
+    <section class="charts">
+      <div class="chart-container">
+        <h3>Biểu Đồ Tăng Trưởng Nhân Sự</h3>
+        <canvas id="growthChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <h3>Cơ Cấu Phòng Ban</h3>
+        <canvas id="departmentChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <h3>Tình Trạng Nhân Sự</h3>
+        <canvas id="statusChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Bảng -->
+    <section class="table-section">
+      <h3>Danh Sách Nhân Sự Gần Đây</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Mã NV</th>
+            <th>Họ Tên</th>
+            <th>Phòng Ban</th>
+            <th>Chức Vụ</th>
+            <th>Ngày Vào Làm</th>
+            <th>Trạng Thái</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTable"></tbody>
+      </table>
+    </section>
+
+    <!-- Hoạt động -->
+    <section class="activity-section">
+      <h3>Hoạt Động Gần Đây</h3>
+      <div id="activityFeed"></div>
+    </section>
+  </main>
+
+  <div id="loadingOverlay" class="loading-overlay">Đang tải dữ liệu...</div>
+
+     <!-- JavaScript tùy chỉnh -->
+  <script src="~/js/Thongkebaocao.js"></script>

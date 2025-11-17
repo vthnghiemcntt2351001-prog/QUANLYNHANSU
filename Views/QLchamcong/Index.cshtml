@@ -1,0 +1,198 @@
+@{
+    ViewData["Title"] = "Quản lý chấm công nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+    <style>
+        :root {
+            --main-blue: #1d72b8;
+            --dark-blue: #155d8b;
+            --light-bg: #f8f9fa;
+        }
+        body {
+            background-color: var(--light-bg);
+            font-family: "Segoe UI", sans-serif;
+        }
+        .topbar {
+            background: linear-gradient(90deg, var(--main-blue), var(--dark-blue));
+            color: white;
+            padding: 14px 24px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .topbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .table th {
+            background-color: var(--main-blue);
+            color: white;
+            text-align: center;
+        }
+        .card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: white;
+        }
+        .btn-primary {
+            background-color: var(--main-blue);
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+        }
+        .salary-cell {
+            font-weight: 600;
+            color: #1379c7;
+        }
+    </style>
+
+
+<div class="topbar">
+    <div>🕒 Quản lý chấm công nhân viên - Hệ thống NTV</div>
+    <a asp-controller="Home" asp-action="Index">← Quay lại Dashboard</a>
+</div>
+
+<div class="container mt-5">
+    <div class="card p-4">
+        <h3 class="text-center mb-4 text-primary">BẢNG CHẤM CÔNG NHÂN VIÊN</h3>
+
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-success" id="btnTinhCong">🧮 Tính công</button>
+            <button class="btn btn-primary ms-2" id="btnXuatChamCong">📤 Xuất bảng chấm công</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle text-center" id="tableChamCong">
+                <thead>
+                    <tr>
+                        <th>Mã NV</th>
+                        <th>Họ tên</th>
+                        <th>Chức vụ</th>
+                        <th>Ngày làm việc</th>
+                        <th>Ngày nghỉ</th>
+                        <th>Tổng công</th>
+                    </tr>
+                </thead>
+                <tbody id="bangChamCong">
+                    <tr>
+                        <td>NV01</td><td>Nguyễn Văn An</td><td>Nhân viên IT</td>
+                        <td><input type="number" class="form-control text-center ngay-lam" value="26" min="0" max="31"></td>
+                        <td><input type="number" class="form-control text-center ngay-nghi" value="4" min="0" max="31"></td>
+                        <td class="tong-cong salary-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td>NV02</td><td>Trần Thị Bích</td><td>Kế toán</td>
+                        <td><input type="number" class="form-control text-center ngay-lam" value="24"></td>
+                        <td><input type="number" class="form-control text-center ngay-nghi" value="6"></td>
+                        <td class="tong-cong salary-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td>NV03</td><td>Lê Minh Châu</td><td>Nhân sự</td>
+                        <td><input type="number" class="form-control text-center ngay-lam" value="27"></td>
+                        <td><input type="number" class="form-control text-center ngay-nghi" value="3"></td>
+                        <td class="tong-cong salary-cell">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Thư viện xuất Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+    <script>
+        let chamCongDaTinh = false;
+
+        // ✅ Tính công
+        document.getElementById("btnTinhCong").addEventListener("click", function () {
+            const rows = document.querySelectorAll("#bangChamCong tr");
+            rows.forEach(row => {
+                const ngayLam = parseInt(row.querySelector(".ngay-lam").value) || 0;
+                const ngayNghi = parseInt(row.querySelector(".ngay-nghi").value) || 0;
+                const tongCong = ngayLam - ngayNghi;
+                row.querySelector(".tong-cong").textContent = tongCong;
+            });
+
+            chamCongDaTinh = true;
+            alert("✅ Đã tính xong tổng công cho nhân viên!");
+        });
+
+        // ✅ Xuất bảng chấm công ra Excel
+        document.getElementById("btnXuatChamCong").addEventListener("click", async function () {
+            if (!chamCongDaTinh) {
+                alert("⚠️ Vui lòng tính công trước khi xuất bảng!");
+                return;
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Bảng Chấm Công");
+
+            // Header
+            const headers = ["Mã NV", "Họ tên", "Chức vụ", "Ngày làm việc", "Ngày nghỉ", "Tổng công"];
+            worksheet.addRow(headers);
+
+            // Dữ liệu từ bảng
+            document.querySelectorAll("#bangChamCong tr").forEach(row => {
+                const cells = Array.from(row.querySelectorAll("td")).map(td => {
+                    const input = td.querySelector("input");
+                    return input ? input.value : td.textContent.trim();
+                });
+                worksheet.addRow(cells);
+            });
+
+            // Style header
+            const headerRow = worksheet.getRow(1);
+            headerRow.eachCell(cell => {
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1D72B8' } };
+                cell.font = { color: { argb: 'FFFFFF' }, bold: true };
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            });
+
+            // Viền + màu xen kẽ
+            worksheet.eachRow((row, i) => {
+                row.eachCell(cell => {
+                    cell.border = {
+                        top: { style: 'thin', color: { argb: '000000' } },
+                        left: { style: 'thin', color: { argb: '000000' } },
+                        bottom: { style: 'thin', color: { argb: '000000' } },
+                        right: { style: 'thin', color: { argb: '000000' } }
+                    };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    if (i > 1) {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: i % 2 === 0 ? 'F2F2F2' : 'FFFFFF' }
+                        };
+                    }
+                });
+            });
+
+            // Auto width
+            worksheet.columns.forEach(col => {
+                let max = 0;
+                col.eachCell({ includeEmpty: true }, cell => {
+                    const text = cell.value ? cell.value.toString() : "";
+                    max = Math.max(max, text.length);
+                });
+                col.width = max + 3;
+            });
+
+            // Xuất file
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "Bang_Cham_Cong.xlsx");
+            alert("📤 Xuất bảng chấm công thành công!");
+        });
+    </script>
+

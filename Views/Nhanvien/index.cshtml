@@ -1,0 +1,221 @@
+@{
+    ViewData["Title"] = "Hồ sơ nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .profile-container {
+        max-width: 1000px;
+        margin: 40px auto;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, #007bff, #00a2ff);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .profile-header img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .profile-card {
+        background: #fff;
+        border-radius: 0 0 15px 15px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .info-section {
+        margin-bottom: 25px;
+    }
+
+    .info-section h5 {
+        color: #007bff;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 6px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .info-row {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        margin-bottom: 10px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .info-value {
+        color: #555;
+    }
+
+    .info-value a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .info-value a:hover {
+        text-decoration: underline;
+    }
+
+    .btn-edit {
+        float: right;
+        margin-top: -10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+    .btn-edit:hover {
+        background-color: #0056b3;
+    }
+
+    .badge-role {
+        background-color: #ffc107;
+        color: black;
+        font-weight: 500;
+    }
+
+    /* Toast */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
+    }
+
+    .toast {
+        border-left: 5px solid #0d6efd;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .toast-success {
+        border-left-color: #198754;
+    }
+
+    /* Modal */
+    .modal-lg {
+        max-width: 900px;
+    }
+</style>
+
+
+<div class="profile-container">
+    <!-- Header -->
+    <div class="profile-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="avatar">
+        <div>
+            <h3>Nguyễn Văn An</h3>
+            <p><i class="bi bi-briefcase"></i> Nhân viên IT</p>
+            <p><i class="bi bi-building"></i> Phòng Kỹ thuật</p>
+            <span class="badge badge-role">Nhân viên chính thức</span>
+        </div>
+    </div>
+
+    <!-- Nội dung -->
+    <div class="profile-card">
+        <div class="info-section">
+            <h5>📋 Thông tin cá nhân <button class="btn-edit" onclick="editProfile()">✏️ Sửa</button></h5>
+            <div class="info-row"><div class="info-label">Mã nhân viên:</div><div class="info-value">NV001</div></div>
+            <div class="info-row"><div class="info-label">Họ và tên:</div><div class="info-value">Nguyễn Văn An</div></div>
+            <div class="info-row"><div class="info-label">Giới tính:</div><div class="info-value">Nam</div></div>
+            <div class="info-row"><div class="info-label">Ngày sinh:</div><div class="info-value">12/03/1998</div></div>
+            <div class="info-row"><div class="info-label">CMND/CCCD:</div><div class="info-value">123456789</div></div>
+        </div>
+
+        <div class="info-section">
+            <h5>📞 Thông tin liên hệ</h5>
+            <div class="info-row"><div class="info-label">Số điện thoại:</div><div class="info-value">0909 123 456</div></div>
+            <div class="info-row"><div class="info-label">Email:</div><div class="info-value">nguyenvana@ntv.vn</div></div>
+            <div class="info-row"><div class="info-label">Địa chỉ:</div><div class="info-value">123 Lý Thường Kiệt, Q.10, TP.HCM</div></div>
+        </div>
+
+        <div class="info-section">
+            <h5>💼 Thông tin công việc</h5>
+            <div class="info-row"><div class="info-label">Chức vụ:</div><div class="info-value">Nhân viên IT</div></div>
+            <div class="info-row"><div class="info-label">Phòng ban:</div><div class="info-value">Kỹ thuật</div></div>
+            <div class="info-row"><div class="info-label">Ngày vào làm:</div><div class="info-value">05/04/2022</div></div>
+            <div class="info-row"><div class="info-label">Tình trạng:</div><div class="info-value text-success">Đang làm việc</div></div>
+        </div>
+
+        <div class="info-section">
+            <h5>🧾 Hợp đồng & Lương</h5>
+            <div class="info-row">
+                <div class="info-label">Hợp đồng lao động:</div>
+                <div class="info-value">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#contractModal">
+                        Xem hợp đồng (PDF)
+                    </a>
+                    <!-- hoặc: <a href="/uploads/HDLD_NV001.pdf" target="_blank">Xem hợp đồng (PDF)</a> -->
+                </div>
+            </div>
+            <div class="info-row"><div class="info-label">Mức lương cơ bản:</div><div class="info-value">15,000,000 VNĐ</div></div>
+            <div class="info-row"><div class="info-label">Ngày hết hạn HĐ:</div><div class="info-value">05/04/2025</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal hiển thị hợp đồng -->
+<div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="contractModalLabel">📄 Hợp đồng lao động - NV001</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <iframe src="/uploads/HDLD_NV001.pdf" width="100%" height="500px" style="border:none;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    function editProfile() {
+        showToast("✏️ Tính năng chỉnh sửa hồ sơ đang được phát triển!", "success");
+    }
+
+    function showToast(message, type) {
+        const id = "toast" + Date.now();
+        const bg = type === "success" ? "toast-success" : "";
+        const html = `
+        <div class="toast bg-white text-dark ${bg}" id="${id}" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>`;
+        document.getElementById("toastContainer").insertAdjacentHTML("beforeend", html);
+        const toastEl = document.getElementById(id);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+    }
+</script>

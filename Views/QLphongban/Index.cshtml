@@ -1,0 +1,185 @@
+@{
+    ViewData["Title"] = "Quản lý Phòng ban";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<div class="container mt-4">
+    <div class="bg-info text-white p-3 rounded shadow-sm mb-4">
+        <h3 class="mb-3">Quản lý Phòng ban</h3>
+        <div class="d-flex align-items-center" style="gap: 15px;">
+            <input type="text" class="form-control rounded-pill" placeholder="🔍 Tìm phòng ban..." style="width: 280px;">
+            <button class="btn btn-light fw-bold px-3 py-2 text-primary" data-bs-toggle="modal" data-bs-target="#addDepartmentModal" style="border-radius: 10px;">
+                <i class="bi bi-plus-circle"></i> Thêm mới
+            </button>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách phòng ban -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Mã phòng</th>
+                        <th>Tên phòng ban</th>
+                        <th>Trưởng phòng</th>
+                        <th>Số nhân viên</th>
+                        <th>Ghi chú</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PB01</td>
+                        <td>Phòng Kế toán</td>
+                        <td>Trần Văn Hùng</td>
+                        <td>10</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PB02</td>
+                        <td>Phòng Nhân sự</td>
+                        <td>Phạm Văn Minh</td>
+                        <td>8</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PB03</td>
+                        <td>Phòng Kỹ thuật</td>
+                        <td>Lê Hoàng</td>
+                        <td>12</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PB04</td>
+                        <td>Phòng IT</td>
+                        <td>Nguyễn Thị Hòa</td>
+                        <td>6</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PB05</td>
+                        <td>Phòng Marketing</td>
+                        <td>Võ Quốc Khánh</td>
+                        <td>9</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PB06</td>
+                        <td>Phòng CSKH</td>
+                        <td>Nguyễn Mỹ Dung</td>
+                        <td>9</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PB07</td>
+                        <td>Phòng R&D</td>
+                        <td>Phạm Thị Thúy Vy</td>
+                        <td>9</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PB08</td>
+                        <td>Phòng Kinh Doanh</td>
+                        <td>Vũ Duy Minh</td>
+                        <td>9</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>PB09</td>
+                        <td>Phòng Vận hành</td>
+                        <td>Phan Văn Đức</td>
+                        <td>9</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>PB10</td>
+                        <td>Phòng Bảo vệ và vệ sinh</td>
+                        <td>Nguyễn Văn Hải</td>
+                        <td>9</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm mới -->
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="addDepartmentModalLabel"><i class="bi bi-plus-circle"></i> Thêm phòng ban mới</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Tên phòng ban</label>
+            <input type="text" class="form-control" placeholder="Nhập tên phòng ban...">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Trưởng phòng</label>
+            <input type="text" class="form-control" placeholder="Nhập tên trưởng phòng...">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Số nhân viên</label>
+            <input type="number" class="form-control" placeholder="Nhập số nhân viên...">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ghi chú</label>
+            <textarea class="form-control" rows="2" placeholder="Ghi chú thêm (nếu có)..."></textarea>
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

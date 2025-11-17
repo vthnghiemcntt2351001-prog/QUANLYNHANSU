@@ -1,0 +1,349 @@
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #f8f9fb;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .page-header {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header h2 {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .filter-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .user-table th {
+        background-color: #0d6efd;
+        color: white;
+        text-align: center;
+    }
+
+    .user-table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .user-table tr:hover {
+        background-color: #eef5ff;
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg, #0d6efd, #00b4d8);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        transition: 0.3s;
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+    }
+
+    .modal-content {
+        border-radius: 12px;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #0d6efd, #00b4d8);
+        color: white;
+    }
+
+    .btn-submit {
+        background: #0d6efd;
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: #0b5ed7;
+    }
+
+    /* 🔔 Toast notification góc phải */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
+    }
+
+    .toast {
+        border-left: 6px solid #0d6efd;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        border-radius: 10px;
+        padding: 10px 16px;
+    }
+
+    .toast-success {
+        border-left-color: #198754;
+    }
+
+    .toast-danger {
+        border-left-color: #dc3545;
+    }
+
+    .toast-warning {
+        border-left-color: #ffc107;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="page-header">
+        <h2>👥 Quản lý người dùng</h2>
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#modalThemNguoiDung">➕ Thêm người dùng mới</button>
+    </div>
+
+    <div class="filter-bar">
+        <select id="roleFilter" class="form-select" style="width: 180px;">
+            <option value="all">Tất cả vai trò</option>
+            <option value="Admin">Admin</option>
+            <option value="Quản lý">Quản lý</option>
+            <option value="Nhân viên">Nhân viên</option>
+        </select>
+        <input type="text" id="searchInput" class="form-control" placeholder="🔍 Tìm theo tên hoặc email..." style="width: 250px;">
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped user-table" id="userTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" /></th>
+                        <th>Tên đăng nhập</th>
+                        <th>Email</th>
+                        <th>Mật khẩu</th>
+                        <th>Vai trò</th>
+                        <th>Truy cập gần nhất</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="userList">
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>admin01</td>
+                        <td>admin@ntv.vn</td>
+                        <td>••••••</td>
+                        <td>Admin</td>
+                        <td>2025-11-06 18:30</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="suaNguoiDung(this)">✏️ Sửa</button>
+                            <button class="btn btn-danger btn-sm" onclick="xoaNguoiDung(this)">🗑️ Xóa</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>nv001</td>
+                        <td>nhanvien@ntv.vn</td>
+                        <td>••••••</td>
+                        <td>Nhân viên</td>
+                        <td>2025-11-06 17:20</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="suaNguoiDung(this)">✏️ Sửa</button>
+                            <button class="btn btn-danger btn-sm" onclick="xoaNguoiDung(this)">🗑️ Xóa</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Modal thêm người dùng -->
+<div class="modal fade" id="modalThemNguoiDung" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">➕ Thêm người dùng mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formThemNguoiDung">
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phân quyền</label>
+                        <select class="form-select" id="role">
+                            <option>Nhân viên</option>
+                            <option>Quản lý</option>
+                            <option>Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-submit mt-3">Tạo tài khoản</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa -->
+<div class="modal fade" id="modalSuaNguoiDung" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">✏️ Chỉnh sửa người dùng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formSuaNguoiDung">
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="editUsername" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="text" class="form-control" id="editPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vai trò</label>
+                        <select class="form-select" id="editRole">
+                            <option>Nhân viên</option>
+                            <option>Quản lý</option>
+                            <option>Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-submit mt-3">Lưu thay đổi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let rowDangSua = null;
+
+    // 🔍 Tìm kiếm
+    document.getElementById("searchInput").addEventListener("input", function () {
+        const keyword = this.value.toLowerCase();
+        document.querySelectorAll("#userList tr").forEach(row => {
+            const name = row.cells[1].textContent.toLowerCase();
+            const email = row.cells[2].textContent.toLowerCase();
+            row.style.display = name.includes(keyword) || email.includes(keyword) ? "" : "none";
+        });
+    });
+
+    // 🧩 Lọc vai trò
+    document.getElementById("roleFilter").addEventListener("change", function () {
+        const filter = this.value;
+        document.querySelectorAll("#userList tr").forEach(row => {
+            const role = row.cells[4].textContent.trim();
+            row.style.display = (filter === "all" || role === filter) ? "" : "none";
+        });
+    });
+
+    // 🟢 Thêm người dùng
+    document.getElementById("formThemNguoiDung").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("role").value;
+        const now = new Date().toLocaleString();
+
+        const newRow = `
+            <tr>
+                <td><input type="checkbox" /></td>
+                <td>${username}</td>
+                <td>${email}</td>
+                <td>${password}</td>
+                <td>${role}</td>
+                <td>${now}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="suaNguoiDung(this)">✏️ Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="xoaNguoiDung(this)">🗑️ Xóa</button>
+                </td>
+            </tr>`;
+        document.getElementById("userList").insertAdjacentHTML("beforeend", newRow);
+
+        bootstrap.Modal.getInstance(document.getElementById('modalThemNguoiDung')).hide();
+        this.reset();
+        showToast("✅ Đã thêm người dùng mới!", "success");
+    });
+
+    // ✏️ Sửa
+    function suaNguoiDung(btn) {
+        rowDangSua = btn.closest("tr");
+        document.getElementById("editUsername").value = rowDangSua.cells[1].textContent;
+        document.getElementById("editEmail").value = rowDangSua.cells[2].textContent;
+        document.getElementById("editPassword").value = rowDangSua.cells[3].textContent;
+        document.getElementById("editRole").value = rowDangSua.cells[4].textContent.trim();
+        new bootstrap.Modal(document.getElementById('modalSuaNguoiDung')).show();
+    }
+
+    // 💾 Lưu thay đổi
+    document.getElementById("formSuaNguoiDung").addEventListener("submit", function (e) {
+        e.preventDefault();
+        rowDangSua.cells[1].textContent = document.getElementById("editUsername").value;
+        rowDangSua.cells[2].textContent = document.getElementById("editEmail").value;
+        rowDangSua.cells[3].textContent = document.getElementById("editPassword").value;
+        rowDangSua.cells[4].textContent = document.getElementById("editRole").value;
+        rowDangSua.cells[5].textContent = new Date().toLocaleString(); // cập nhật "truy cập gần nhất"
+
+        bootstrap.Modal.getInstance(document.getElementById('modalSuaNguoiDung')).hide();
+        showToast("✏️ Cập nhật thông tin người dùng thành công!", "warning");
+    });
+
+    // 🗑️ Xóa
+    function xoaNguoiDung(btn) {
+        if (confirm("Bạn có chắc muốn xóa người dùng này không?")) {
+            btn.closest("tr").remove();
+            showToast("🗑️ Đã xóa người dùng!", "danger");
+        }
+    }
+
+    // 🔔 Toast
+    function showToast(message, type) {
+        const toastId = "toast" + Date.now();
+        const bgClass = type === "success" ? "toast-success" :
+                        type === "warning" ? "toast-warning" :
+                        type === "danger" ? "toast-danger" : "";
+        const toastHTML = `
+        <div class="toast align-items-center text-dark bg-white border-0 ${bgClass}" id="${toastId}" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>`;
+        document.getElementById("toastContainer").insertAdjacentHTML("beforeend", toastHTML);
+        const toastEl = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+    }
+</script>

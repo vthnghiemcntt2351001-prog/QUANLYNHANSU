@@ -1,0 +1,205 @@
+/* ==================== TOÀN TRANG ==================== */
+body {
+    background: url('/image/backgroud_login.png') center/cover no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center; /* Căn giữa ngang */
+    align-items: center;     /* Căn giữa dọc */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+/* ==================== KHUNG LOGIN ==================== */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.login-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(2, 7, 52, 0.3);
+    border: none;
+    background: #fff;
+}
+
+/* ==================== PHẦN HEADER ==================== */
+.login-header {
+    background: linear-gradient(135deg, #8ec1ff 0%, #1379c7 100%);
+    color: white;
+    padding: 24px 16px;
+    text-align: center;
+}
+
+.login-header h2 {
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.login-header p {
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* ==================== CHỌN VAI TRÒ ==================== */
+.role-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 0;
+}
+
+.role-option {
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+    background: #f8f9fa;
+}
+
+.role-option:first-child {
+    border-radius: 15px 0 0 0;
+}
+
+.role-option:last-child {
+    border-radius: 0 15px 0 0;
+}
+
+.role-option:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.role-option.active {
+    background: linear-gradient(135deg, #8ec1ff 0%, #1379c7 100%);
+    color: white;
+    border-color: #ffffff;
+}
+
+.role-option h5 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.role-option p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* ==================== FORM ĐĂNG NHẬP ==================== */
+.form-container {
+    padding: 36px 40px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+/* Ô nhập liệu (Tên đăng nhập + Mật khẩu) */
+.form-control {
+    width: 100%;
+    height: 50px; /* ✅ Bằng chiều cao nút login */
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    border-color: #1379c7;
+    box-shadow: 0 0 0 0.2rem rgba(19, 121, 199, 0.25);
+}
+
+/* ==================== NÚT LOGIN ==================== */
+.btn-login {
+    width: 100%;
+    height: 50px; /* ✅ Bằng input */
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    background: linear-gradient(135deg, #8ec1ff 0%, #1379c7 100%);
+    color: white;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* ==================== QUÊN MẬT KHẨU ==================== */
+.forgot-password {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.forgot-password a {
+    color: #1379c7;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+/* ==================== CHÂN TRANG ==================== */
+.footer-text {
+    text-align: center;
+    padding: 16px;
+    background: #f8f9fa;
+    color: #6c757d;
+    font-size: 14px;
+    border-radius: 0 0 20px 20px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 576px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .role-option {
+        padding: 18px;
+    }
+
+    .login-header h2 {
+        font-size: 22px;
+    }
+
+    .btn-login {
+        font-size: 15px;
+        height: 45px;
+    }
+}
+
+.login-error {
+    background: #ffcccc;
+    border-left: 4px solid #ff4d4d;
+    color: #b30000;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    overflow: hidden;
+    max-height: 200px; /* để xuất hiện bình thường */
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+
+/* Khi mất hiệu ứng → thu về 0 */
+.login-error.hide {
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    padding: 0 12px;
+}

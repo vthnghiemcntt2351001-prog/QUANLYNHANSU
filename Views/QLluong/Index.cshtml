@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "Quản lý lương nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+<style>
+    :root {
+        --main-blue: #1d72b8;
+        --dark-blue: #155d8b;
+        --light-bg: #f8f9fa;
+    }
+    body {
+        background-color: var(--light-bg);
+        font-family: "Segoe UI", sans-serif;
+    }
+    .topbar {
+        background: linear-gradient(90deg, var(--main-blue), var(--dark-blue));
+        color: white;
+        padding: 14px 24px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .topbar a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .table th {
+        background-color: var(--main-blue);
+        color: white;
+        text-align: center;
+    }
+    .salary-cell {
+        font-weight: bold;
+        color: #198754;
+    }
+    .card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        background: white;
+    }
+    .btn-primary {
+        background-color: var(--main-blue);
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: var(--dark-blue);
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card p-4">
+        <h3 class="text-center mb-4 text-primary">BẢNG TÍNH LƯƠNG NHÂN VIÊN</h3>
+
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-success" id="btnTinhLuong">💰 Tính lương</button>
+            <button class="btn btn-primary ms-2" id="btnXuatLuong">📤 Xuất bảng lương</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle text-center" id="tableLuong">
+                <thead>
+                    <tr>
+                        <th>Mã NV</th>
+                        <th>Họ tên</th>
+                        <th>Chức vụ</th>
+                        <th>Ngày làm việc</th>
+                        <th>Lương/ngày (VNĐ)</th>
+                        <th>Tổng lương (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody id="bangChamCong">
+                    <tr><td>NV01</td><td>Nguyễn Văn An</td><td>Nhân viên IT</td><td><input type="number" class="form-control text-center ngay-lam" value="26"></td><td class="luong-ngay">500000</td><td class="tong-luong salary-cell">0</td></tr>
+                    <tr><td>NV02</td><td>Trần Thị Bích</td><td>Kế toán</td><td><input type="number" class="form-control text-center ngay-lam" value="24"></td><td class="luong-ngay">450000</td><td class="tong-luong salary-cell">0</td></tr>
+                    <tr><td>NV03</td><td>Lê Minh Châu</td><td>Nhân sự</td><td><input type="number" class="form-control text-center ngay-lam" value="28"></td><td class="luong-ngay">480000</td><td class="tong-luong salary-cell">0</td></tr>
+                    <tr><td>NV04</td><td>Phạm Văn Dũng</td><td>Trưởng phòng IT</td><td><input type="number" class="form-control text-center ngay-lam" value="25"></td><td class="luong-ngay">700000</td><td class="tong-luong salary-cell">0</td></tr>
+                    <tr><td>NV05</td><td>Nguyễn Thị Hồng</td><td>Thư ký</td><td><input type="number" class="form-control text-center ngay-lam" value="27"></td><td class="luong-ngay">420000</td><td class="tong-luong salary-cell">0</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Thêm thư viện xuất Excel -->
+<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+
+<script>
+    let luongDaTinh = false; // Cờ kiểm tra
+
+// Nút tính lương
+document.getElementById("btnTinhLuong").addEventListener("click", function () {
+    const rows = document.querySelectorAll("#bangChamCong tr");
+    rows.forEach(row => {
+        const ngayLam = parseInt(row.querySelector(".ngay-lam").value) || 0;
+        const luongNgay = parseInt(row.querySelector(".luong-ngay").textContent) || 0;
+        const tongLuong = ngayLam * luongNgay;
+        row.querySelector(".tong-luong").textContent = tongLuong.toLocaleString("vi-VN");
+    });
+
+    luongDaTinh = true; // ✅ Đã tính xong
+    alert("✅ Đã tính xong lương cho nhân viên!");
+});
+
+// Nút xuất Excel
+document.getElementById("btnXuatLuong").addEventListener("click", async function () {
+    if (!luongDaTinh) { // ❌ Nếu chưa tính
+        alert("⚠️ Vui lòng tính lương trước khi xuất bảng!");
+        return;
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Bảng Lương NTV");
+
+    // Tiêu đề
+    const headers = ["Mã NV", "Họ tên", "Chức vụ", "Ngày làm việc", "Lương/ngày (VNĐ)", "Tổng lương (VNĐ)"];
+    worksheet.addRow(headers);
+
+    // Dữ liệu
+    document.querySelectorAll("#bangChamCong tr").forEach(row => {
+        const cells = Array.from(row.querySelectorAll("td")).map(td => {
+            const input = td.querySelector("input");
+            return input ? input.value : td.textContent.trim();
+        });
+        worksheet.addRow(cells);
+    });
+
+    // Style header
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell(cell => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1D72B8' } };
+        cell.font = { color: { argb: 'FFFFFF' }, bold: true };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = {
+            top: { style: 'thin', color: { argb: '000000' } },
+            left: { style: 'thin', color: { argb: '000000' } },
+            bottom: { style: 'thin', color: { argb: '000000' } },
+            right: { style: 'thin', color: { argb: '000000' } }
+        };
+    });
+
+    // Style dữ liệu + màu xen kẽ
+    worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber > 1) {
+            const isEven = rowNumber % 2 === 0;
+            const bgColor = isEven ? 'F2F2F2' : 'FFFFFF';
+            row.eachCell(cell => {
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bgColor } };
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                cell.border = {
+                    top: { style: 'thin', color: { argb: '000000' } },
+                    left: { style: 'thin', color: { argb: '000000' } },
+                    bottom: { style: 'thin', color: { argb: '000000' } },
+                    right: { style: 'thin', color: { argb: '000000' } }
+                };
+            });
+        }
+    });
+
+    // Auto width
+    worksheet.columns.forEach(column => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, cell => {
+            const text = cell.value ? cell.value.toString() : "";
+            maxLength = Math.max(maxLength, text.length);
+        });
+        column.width = maxLength + 3;
+    });
+
+    // Xuất file
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "Bang_Luong_NTV.xlsx");
+    alert("📤 Xuất bảng lương thành công!");
+});
+
+    
+    
+</script>
