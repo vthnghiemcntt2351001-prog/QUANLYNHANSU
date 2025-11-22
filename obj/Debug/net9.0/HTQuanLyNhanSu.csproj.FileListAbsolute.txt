@@ -4156,3 +4156,4 @@ D:\QUANLYNHANSU-main\obj\Debug\net9.0\HTQuanLyNhanSu.genruntimeconfig.cache
 D:\QUANLYNHANSU-main\obj\Debug\net9.0\ref\HTQuanLyNhanSu.dll
 D:\QUANLYNHANSU-main\obj\Debug\net9.0\compressed\gqljkszyty-eeii6y4bn0.gz
 D:\QUANLYNHANSU-main\obj\Debug\net9.0\compressed\icqs2df7ol-d544jhyilk.gz
+D:\QUANLYNHANSU-main\obj\Debug\net9.0\HTQuanLyNhanSu.sourcelink.json

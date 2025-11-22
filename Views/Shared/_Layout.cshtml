@@ -192,7 +192,7 @@
                                 </li>
                             </ul>
                         </li>
-@if (role == "Admin")
+            @if (role == "Admin")
                                 {
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -203,12 +203,14 @@
                                 </p>
                             </a>
                             
-                                    <li class="nav nav-treeview">
-                                        <a asp-controller="QuanTriVien" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Tài khoản & Phân quyền</p>
-                                        </a>
-                                    </li>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="QuanTriVien" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Tài khoản & Phân quyền</p>
+                                    </a>
+                                </li>
+                            </ul>
                                 
                         </li>
                         }

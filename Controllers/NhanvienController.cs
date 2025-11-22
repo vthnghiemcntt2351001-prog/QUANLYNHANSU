@@ -7,19 +7,29 @@ namespace HTQuanLyNhanSu.Controllers
     {
         // GET: Hiển thị trang đăng nhập
         [HttpGet]
-        public IActionResult Index()
-        {
-            if (HttpContext.Session.GetString("Role") != "NhanVien")
-            return RedirectToAction("AccessDenied", "Login");
-            return View(); // => Views/Login/Index.cshtml
-        }
-         public IActionResult HoSo()
-        {
-            if (HttpContext.Session.GetString("Role") != "NhanVien")
-                return RedirectToAction("AccessDenied", "Login");
+public IActionResult Index()
+{
+    var role = HttpContext.Session.GetString("Role");
 
-            return View();
-        }
+    if (role != "NhanVien" && role != "Admin" && role != "NhanSu")
+        return RedirectToAction("AccessDenied", "Login");
+
+    return View();
+}
+        // public IActionResult Index()
+        // {
+        //     if (HttpContext.Session.GetString("Role") != "NhanVien")
+        //     return RedirectToAction("AccessDenied", "Login");
+        //     return View(); // => Views/Login/Index.cshtml
+        // }
+       
+        //  public IActionResult HoSo()
+        // {
+        //     if (HttpContext.Session.GetString("Role") != "NhanVien")
+        //         return RedirectToAction("AccessDenied", "Login");
+
+        //     return View();
+        // }
          public IActionResult NghiPhep()
         {
             if (HttpContext.Session.GetString("Role") != "NhanVien")
