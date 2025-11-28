@@ -1,185 +1,605 @@
-@{
-    ViewData["Title"] = "Quản lý Phòng ban";
-    Layout = "~/Views/Shared/_Layout.cshtml"; 
-}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quản lý Phòng ban - HRM (Full)</title>
 
-<div class="container mt-4">
-    <div class="bg-info text-white p-3 rounded shadow-sm mb-4">
-        <h3 class="mb-3">Quản lý Phòng ban</h3>
-        <div class="d-flex align-items-center" style="gap: 15px;">
-            <input type="text" class="form-control rounded-pill" placeholder="🔍 Tìm phòng ban..." style="width: 280px;">
-            <button class="btn btn-light fw-bold px-3 py-2 text-primary" data-bs-toggle="modal" data-bs-target="#addDepartmentModal" style="border-radius: 10px;">
-                <i class="bi bi-plus-circle"></i> Thêm mới
-            </button>
-        </div>
-    </div>
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bảng danh sách phòng ban -->
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-hover align-middle">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Mã phòng</th>
-                        <th>Tên phòng ban</th>
-                        <th>Trưởng phòng</th>
-                        <th>Số nhân viên</th>
-                        <th>Ghi chú</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>PB01</td>
-                        <td>Phòng Kế toán</td>
-                        <td>Trần Văn Hùng</td>
-                        <td>10</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PB02</td>
-                        <td>Phòng Nhân sự</td>
-                        <td>Phạm Văn Minh</td>
-                        <td>8</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PB03</td>
-                        <td>Phòng Kỹ thuật</td>
-                        <td>Lê Hoàng</td>
-                        <td>12</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PB04</td>
-                        <td>Phòng IT</td>
-                        <td>Nguyễn Thị Hòa</td>
-                        <td>6</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PB05</td>
-                        <td>Phòng Marketing</td>
-                        <td>Võ Quốc Khánh</td>
-                        <td>9</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PB06</td>
-                        <td>Phòng CSKH</td>
-                        <td>Nguyễn Mỹ Dung</td>
-                        <td>9</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PB07</td>
-                        <td>Phòng R&D</td>
-                        <td>Phạm Thị Thúy Vy</td>
-                        <td>9</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PB08</td>
-                        <td>Phòng Kinh Doanh</td>
-                        <td>Vũ Duy Minh</td>
-                        <td>9</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                     <tr>
-                        <td>PB09</td>
-                        <td>Phòng Vận hành</td>
-                        <td>Phan Văn Đức</td>
-                        <td>9</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                     <tr>
-                        <td>PB10</td>
-                        <td>Phòng Bảo vệ và vệ sinh</td>
-                        <td>Nguyễn Văn Hải</td>
-                        <td>9</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<!-- Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- jsPDF + autotable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<!-- SheetJS (Excel) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- FileSaver -->
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+<style>
+  body { background:#f4f7ff; }
+  .card-custom { border-radius:12px; border:none; box-shadow:0 6px 20px rgba(20,40,80,0.08); }
+  .table tbody tr:hover { background:#eef6ff; }
+  .thumb { width:44px; height:44px; object-fit:cover; border-radius:8px; }
+  .action-btn { border-radius:8px; padding:6px 9px; box-shadow:0 2px 6px rgba(0,0,0,0.08); transition:.15s; }
+  .action-btn:hover { transform:translateY(-2px); }
+  .spinner-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:99999; }
+  th.sortable { cursor:pointer; user-select:none; }
+  .small-muted { font-size:.85rem; color:#6c757d; }
+  .table-fixed { table-layout:fixed; word-wrap:break-word; }
+</style>
+</head>
+<body class="p-4">
+
+<div id="spinner" class="spinner-overlay" style="display:none;">
+  <div class="text-center">
+    <div class="spinner-border text-primary" role="status" style="width:3.2rem;height:3.2rem"></div>
+    <div class="mt-2 fw-semibold">Đang tải...</div>
+  </div>
 </div>
 
-<!-- Modal Thêm mới -->
-<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="addDepartmentModalLabel"><i class="bi bi-plus-circle"></i> Thêm phòng ban mới</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="container">
+  <div class="card card-custom p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="mb-0 text-primary"><i class="bi bi-building"></i> Quản lý Phòng ban</h3>
+      <div>
+        <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#modalAdd">
+          <i class="bi bi-plus-circle"></i> Thêm phòng
+        </button>
+        <div class="btn-group" role="group">
+          <button class="btn btn-outline-primary" onclick="exportExcel()">📤 Excel</button>
+          <button class="btn btn-outline-danger" onclick="exportPDF()">📄 PDF</button>
+          <button class="btn btn-outline-secondary" onclick="exportCSV()">📑 CSV</button>
+          <button class="btn btn-outline-dark" onclick="exportWord()">📘 Word</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row g-2 mb-3">
+      <div class="col-md-4">
+        <input id="searchInput" class="form-control" placeholder="🔍 Tìm mã / tên phòng..." />
+      </div>
+      <div class="col-md-3">
+        <select id="filterHasAvatar" class="form-select">
+          <option value="all">— Tất cả (ảnh trưởng phòng) —</option>
+          <option value="with">Có avatar</option>
+          <option value="without">Chưa có avatar</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select id="pageSize" class="form-select">
+          <option value="4">4 hàng / trang</option>
+          <option value="6" selected>6 hàng / trang</option>
+          <option value="10">10 hàng / trang</option>
+        </select>
+      </div>
+      <div class="col-md-2 text-end small-muted">
+        Tổng: <span id="totalCount">0</span> phòng
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover table-fixed align-middle">
+        <thead class="table-light">
+          <tr>
+            <th class="sortable" onclick="sortBy('ma')">Mã <i id="icon-ma"></i></th>
+            <th>Ảnh</th>
+            <th class="sortable" onclick="sortBy('ten')">Tên phòng <i id="icon-ten"></i></th>
+            <th>Mô tả</th>
+            <th class="sortable" onclick="sortBy('soNV')">Số NV <i id="icon-soNV"></i></th>
+            <th class="text-center">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <nav>
+      <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1050">
+  <div id="toastEl" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastText">Thành công</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Add -->
+<div class="modal fade" id="modalAdd" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Thêm phòng ban</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label class="form-label">Tên phòng ban</label>
-            <input type="text" class="form-control" placeholder="Nhập tên phòng ban...">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Trưởng phòng</label>
-            <input type="text" class="form-control" placeholder="Nhập tên trưởng phòng...">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Số nhân viên</label>
-            <input type="number" class="form-control" placeholder="Nhập số nhân viên...">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Ghi chú</label>
-            <textarea class="form-control" rows="2" placeholder="Ghi chú thêm (nếu có)..."></textarea>
-          </div>
-          <div class="text-end">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-            <button type="submit" class="btn btn-primary">Lưu</button>
+        <form id="formAdd">
+          <div class="row g-2">
+            <div class="col-md-3">
+              <label class="form-label">Mã phòng</label>
+              <input id="addMa" class="form-control" required />
+            </div>
+            <div class="col-md-5">
+              <label class="form-label">Tên phòng</label>
+              <input id="addTen" class="form-control" required />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Số nhân viên</label>
+              <input id="addSoNV" type="number" min="0" value="0" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Trưởng phòng</label>
+              <input id="addTruong" class="form-control" placeholder="Tên trưởng phòng (tùy chọn)" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Ảnh trưởng phòng (avatar)</label>
+              <input id="addAvatar" type="file" accept="image/*" class="form-control" />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Mô tả</label>
+              <textarea id="addMoTa" class="form-control" rows="3"></textarea>
+            </div>
           </div>
         </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-success" onclick="handleAdd()">Lưu & Thêm</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Modal Edit -->
+<div class="modal fade" id="modalEdit" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Sửa phòng ban</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEdit">
+          <input id="editIndex" type="hidden" />
+          <div class="row g-2">
+            <div class="col-md-3">
+              <label class="form-label">Mã phòng</label>
+              <input id="editMa" class="form-control" disabled />
+            </div>
+            <div class="col-md-5">
+              <label class="form-label">Tên phòng</label>
+              <input id="editTen" class="form-control" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Số nhân viên</label>
+              <input id="editSoNV" type="number" min="0" class="form-control" />
+            </div>
 
+            <div class="col-md-6">
+              <label class="form-label">Trưởng phòng</label>
+              <input id="editTruong" class="form-control" />
+            </div>
 
+            <div class="col-md-6">
+              <label class="form-label">Ảnh trưởng phòng</label>
+              <input id="editAvatar" type="file" accept="image/*" class="form-control" />
+              <div class="mt-2"><img id="editPreview" class="thumb" src="" alt=""></div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Mô tả</label>
+              <textarea id="editMoTa" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-warning" onclick="handleSaveEdit()">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Delete Confirm -->
+<div class="modal fade" id="modalDelete" tabindex="-1">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title"><i class="bi bi-trash"></i> Xóa phòng</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xóa <strong id="delName"></strong> ( <span id="delMa"></span> ) ?</p>
+        <input id="delIndex" type="hidden" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger" onclick="handleDelete()">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Modal (chi tiết) -->
+<div class="modal fade" id="modalView" tabindex="-1">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Chi tiết phòng ban</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex gap-3">
+          <img id="viewAvatar" class="thumb" src="" alt="">
+          <div>
+            <h5 id="viewTen"></h5>
+            <div class="small-muted">Mã: <span id="viewMa"></span></div>
+            <div class="small-muted">Trưởng phòng: <span id="viewTruong"></span></div>
+            <div class="small-muted">Số NV: <span id="viewSoNV"></span></div>
+          </div>
+        </div>
+        <hr>
+        <div id="viewMoTa" class="small-muted"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* -------------------------
+  Data & State
+------------------------- */
+let data = [
+  { ma:"PB01", ten:"Phòng Kế Toán", mota:"Quản lý sổ sách, báo cáo", soNV:10, truong:"Trần Văn Hùng", avatar:"", created:new Date().toISOString() },
+  { ma:"PB02", ten:"Phòng Nhân Sự", mota:"Tuyển dụng, chính sách", soNV:8, truong:"Phạm Văn Minh", avatar:"", created:new Date().toISOString() },
+  { ma:"PB03", ten:"Phòng Kỹ Thuật", mota:"Dự án kỹ thuật", soNV:12, truong:"Lê Hoàng", avatar:"", created:new Date().toISOString() },
+  { ma:"PB04", ten:"Phòng IT", mota:"Hạ tầng & dev", soNV:6, truong:"Nguyễn Thị Hòa", avatar:"", created:new Date().toISOString() },
+  { ma:"PB05", ten:"Phòng Marketing", mota:"Quảng cáo & content", soNV:9, truong:"Võ Quốc Khánh", avatar:"", created:new Date().toISOString() },
+  { ma:"PB06", ten:"Phòng CSKH", mota:"Hỗ trợ khách hàng", soNV:9, truong:"Nguyễn Mỹ Dung", avatar:"", created:new Date().toISOString() }
+];
+
+let currentPage = 1;
+let pageSize = Number(document.getElementById('pageSize').value);
+let sortColumn = null; // 'ma' | 'ten' | 'soNV'
+let sortDir = 1; // 1 asc, -1 desc
+
+/* -------------------------
+  Helper UI
+------------------------- */
+const spinner = document.getElementById('spinner');
+function showSpinner(){ spinner.style.display='flex'; }
+function hideSpinner(){ spinner.style.display='none'; }
+
+const toastEl = new bootstrap.Toast(document.getElementById('toastEl'));
+function showToast(msg, type='success'){
+  document.getElementById('toastText').innerText = msg;
+  const el = document.getElementById('toastEl');
+  el.className = 'toast align-items-center border-0'; // reset
+  if(type==='success') el.classList.add('text-bg-success');
+  else if(type==='error') el.classList.add('text-bg-danger');
+  else el.classList.add('text-bg-secondary');
+  toastEl.show();
+}
+
+/* -------------------------
+  Rendering, Filtering, Sorting, Pagination
+------------------------- */
+function getFilteredSorted() {
+  let q = document.getElementById('searchInput').value.trim().toLowerCase();
+  let filterAvatar = document.getElementById('filterHasAvatar').value; // all/with/without
+
+  let result = data.slice();
+
+  if(q) {
+    result = result.filter(x => (x.ma||'').toLowerCase().includes(q) || (x.ten||'').toLowerCase().includes(q) || (x.truong||'').toLowerCase().includes(q));
+  }
+
+  if(filterAvatar === 'with') result = result.filter(x => x.avatar);
+  if(filterAvatar === 'without') result = result.filter(x => !x.avatar);
+
+  if(sortColumn) {
+    result.sort((a,b) => {
+      let A = a[sortColumn], B = b[sortColumn];
+      if(typeof A === 'string') A = A.toLowerCase();
+      if(typeof B === 'string') B = B.toLowerCase();
+      if(A == null) A = '';
+      if(B == null) B = '';
+      if(A < B) return -1 * sortDir;
+      if(A > B) return 1 * sortDir;
+      return 0;
+    });
+  }
+
+  return result;
+}
+
+function renderTable() {
+  pageSize = Number(document.getElementById('pageSize').value);
+  let arr = getFilteredSorted();
+  const total = arr.length;
+  document.getElementById('totalCount').innerText = total;
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  if(currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * pageSize;
+  const pageData = arr.slice(start, start + pageSize);
+
+  let html = '';
+  pageData.forEach((r, idx) => {
+    html += `<tr>
+      <td style="width:100px">${r.ma}</td>
+      <td style="width:72px">${r.avatar ? `<img src="${r.avatar}" class="thumb" alt="">` : `<div class="text-muted small">—</div>`}</td>
+      <td style="min-width:200px">${escapeHtml(r.ten)}<div class="small-muted">${escapeHtml(r.truong)}</div></td>
+      <td>${escapeHtml(r.mota)}</td>
+      <td style="width:120px">${r.soNV ?? ''}</td>
+      <td class="text-center" style="width:170px">
+        <button class="btn btn-sm btn-info action-btn me-1" title="Xem" onclick="openView(${start+idx})"><i class="bi bi-eye"></i></button>
+        <button class="btn btn-sm btn-warning action-btn me-1" title="Sửa" onclick="openEdit(${start+idx})"><i class="bi bi-pencil-square"></i></button>
+        <button class="btn btn-sm btn-danger action-btn me-1" title="Xóa" onclick="openDelete(${start+idx})"><i class="bi bi-trash"></i></button>
+        <button class="btn btn-sm btn-secondary action-btn" title="Nhân sự" onclick="openStaff(${start+idx})"><i class="bi bi-people"></i></button>
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById('tableBody').innerHTML = html;
+  renderPagination(totalPages);
+  updateSortIcons();
+}
+
+function renderPagination(totalPages) {
+  let html = '';
+  for(let i=1;i<=totalPages;i++){
+    html += `<li class="page-item ${i===currentPage ? 'active' : ''}"><a class="page-link" onclick="goPage(${i})">${i}</a></li>`;
+  }
+  document.getElementById('pagination').innerHTML = html;
+}
+
+function goPage(p){ currentPage = p; renderTable(); }
+
+function escapeHtml(t){ if(t==null) return ''; return String(t).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+function sortBy(col){
+  if(sortColumn === col) sortDir = -sortDir;
+  else { sortColumn = col; sortDir = 1; }
+  currentPage = 1;
+  renderTable();
+}
+
+function updateSortIcons(){
+  ['ma','ten','soNV'].forEach(c=> {
+    const el = document.getElementById('icon-'+c);
+    if(!el) return;
+    el.innerHTML = '';
+    if(sortColumn === c) el.innerHTML = sortDir===1 ? ' ▲' : ' ▼';
+  });
+}
+
+/* -------------------------
+  CRUD Handlers
+------------------------- */
+async function handleAdd(){
+  const ma = document.getElementById('addMa').value.trim();
+  const ten = document.getElementById('addTen').value.trim();
+  if(!ma || !ten){ showToast('Vui lòng nhập mã & tên phòng', 'error'); return; }
+  showSpinner();
+  const soNV = Number(document.getElementById('addSoNV').value) || 0;
+  const truong = document.getElementById('addTruong').value.trim();
+  const mota = document.getElementById('addMoTa').value.trim();
+  const file = document.getElementById('addAvatar').files[0];
+  const avatar = file ? await fileToDataURL(file) : '';
+
+  // // Example real API call (uncomment and modify URL when backend ready)
+  // const resp = await fetch('/api/departments', {
+  //   method: 'POST',
+  //   headers: {'Content-Type':'application/json'},
+  //   body: JSON.stringify({ma,ten,mota,soNV,truong,avatar})
+  // });
+  // const created = await resp.json();
+
+  // mock create:
+  await delay(600);
+  data.unshift({ ma, ten, mota, soNV, truong, avatar, created:new Date().toISOString() });
+
+  hideSpinner();
+  showToast('Đã thêm phòng ban');
+  bootstrap.Modal.getInstance(document.getElementById('modalAdd')).hide();
+  document.getElementById('formAdd').reset();
+  currentPage = 1;
+  renderTable();
+}
+
+function openEdit(index){
+  const item = data[index];
+  if(!item) return;
+  document.getElementById('editIndex').value = index;
+  document.getElementById('editMa').value = item.ma;
+  document.getElementById('editTen').value = item.ten;
+  document.getElementById('editSoNV').value = item.soNV ?? '';
+  document.getElementById('editTruong').value = item.truong ?? '';
+  document.getElementById('editMoTa').value = item.mota ?? '';
+  document.getElementById('editPreview').src = item.avatar || '';
+  new bootstrap.Modal(document.getElementById('modalEdit')).show();
+}
+
+async function handleSaveEdit(){
+  const idx = Number(document.getElementById('editIndex').value);
+  const item = data[idx];
+  if(!item) return;
+  showSpinner();
+  const ten = document.getElementById('editTen').value.trim();
+  const soNV = Number(document.getElementById('editSoNV').value) || 0;
+  const truong = document.getElementById('editTruong').value.trim();
+  const mota = document.getElementById('editMoTa').value.trim();
+  const file = document.getElementById('editAvatar').files[0];
+  if(file){
+    item.avatar = await fileToDataURL(file);
+  }
+  item.ten = ten; item.soNV = soNV; item.truong = truong; item.mota = mota;
+
+  // // Example API PUT:
+  // await fetch('/api/departments/' + item.ma, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(item) });
+
+  await delay(500);
+  hideSpinner();
+  showToast('Cập nhật thành công');
+  bootstrap.Modal.getInstance(document.getElementById('modalEdit')).hide();
+  renderTable();
+}
+
+function openDelete(index){
+  const item = data[index];
+  if(!item) return;
+  document.getElementById('delIndex').value = index;
+  document.getElementById('delName').innerText = item.ten;
+  document.getElementById('delMa').innerText = item.ma;
+  new bootstrap.Modal(document.getElementById('modalDelete')).show();
+}
+
+async function handleDelete(){
+  const idx = Number(document.getElementById('delIndex').value);
+  const item = data[idx];
+  if(!item) return;
+  showSpinner();
+  // // API DELETE example:
+  // await fetch('/api/departments/' + item.ma, { method:'DELETE' });
+
+  await delay(400);
+  data.splice(idx, 1);
+  hideSpinner();
+  showToast('Đã xóa');
+  bootstrap.Modal.getInstance(document.getElementById('modalDelete')).hide();
+  renderTable();
+}
+
+function openView(index){
+  const item = data[index];
+  if(!item) return;
+  document.getElementById('viewAvatar').src = item.avatar || '';
+  document.getElementById('viewTen').innerText = item.ten;
+  document.getElementById('viewMa').innerText = item.ma;
+  document.getElementById('viewTruong').innerText = item.truong || '-';
+  document.getElementById('viewSoNV').innerText = item.soNV ?? '-';
+  document.getElementById('viewMoTa').innerText = item.mota || '';
+  new bootstrap.Modal(document.getElementById('modalView')).show();
+}
+
+/* optional action on "Nhân sự" button */
+function openStaff(index){
+  const item = data[index];
+  alert(`Bạn bấm "Nhân sự" của ${item.ten} — đây là chỗ để chuyển sang trang quản lý nhân viên của phòng này.`);
+}
+
+/* -------------------------
+  Export: CSV / Excel / PDF / Word
+------------------------- */
+function exportCSV(){
+  const rows = getFilteredSorted().map(x => [x.ma, x.ten, x.truong||'', x.soNV||'', x.mota||'']);
+  const header = ['Mã','Tên phòng','Trưởng phòng','Số NV','Mô tả'];
+  downloadCSV([header, ...rows], 'PhongBan.csv');
+}
+
+function downloadCSV(rows, filename){
+  const bom = '\uFEFF';
+  const csv = rows.map(r => r.map(c => `"${String(c ?? '').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  saveAs(blob, filename);
+}
+
+function exportExcel(){
+  const wb = XLSX.utils.book_new();
+  const rows = getFilteredSorted().map(x => ({ Mã:x.ma, Tên:x.ten, Trưởng:x.truong, SốNV:x.soNV, Mô_tả:x.mota }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, 'Phòng_ban');
+  const wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
+  saveAs(new Blob([wbout],{type:'application/octet-stream'}), 'PhongBan.xlsx');
+}
+
+function exportPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:'landscape'});
+  const arr = getFilteredSorted().map(x => [x.ma, x.ten, x.truong || '', x.soNV || '', x.mota || '']);
+  doc.autoTable({ head:[['Mã','Tên phòng','Trưởng phòng','Số NV','Mô tả']], body: arr, styles:{fontSize:9} });
+  doc.save('PhongBan.pdf');
+}
+
+function exportWord(){
+  const rows = getFilteredSorted();
+  let html = '<html><head><meta charset="utf-8"/></head><body><h3>Danh sách phòng ban</h3><table border="1" style="border-collapse:collapse">';
+  html += '<tr><th>Mã</th><th>Tên</th><th>Trưởng</th><th>Số NV</th><th>Mô tả</th></tr>';
+  rows.forEach(r => { html += `<tr><td>${r.ma}</td><td>${escapeHtml(r.ten)}</td><td>${escapeHtml(r.truong||'')}</td><td>${r.soNV||''}</td><td>${escapeHtml(r.mota||'')}</td></tr>`; });
+  html += '</table></body></html>';
+  const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+  saveAs(blob, 'PhongBan.doc');
+}
+
+/* -------------------------
+  Utilities
+------------------------- */
+function delay(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+function fileToDataURL(file){
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = e => res(e.target.result);
+    fr.onerror = e => rej(e);
+    fr.readAsDataURL(file);
+  });
+}
+
+/* -------------------------
+  Events
+------------------------- */
+document.getElementById('searchInput').addEventListener('input', debounce(()=>{ currentPage = 1; renderTable(); }, 220));
+document.getElementById('filterHasAvatar').addEventListener('change', ()=>{ currentPage=1; renderTable(); });
+document.getElementById('pageSize').addEventListener('change', ()=>{ currentPage=1; renderTable(); });
+document.getElementById('editAvatar').addEventListener('change', function(){ const f=this.files[0]; if(!f) return; fileToDataURL(f).then(d=>document.getElementById('editPreview').src=d); });
+
+function debounce(fn, t){ let h; return (...a)=>{ clearTimeout(h); h=setTimeout(()=>fn(...a), t); }; }
+
+/* -------------------------
+  Init
+------------------------- */
+renderTable();
+
+/* -------------------------
+  Small helpers for paging outside functions
+------------------------- */
+function goPage(p){ currentPage = p; renderTable(); }
+
+/* -------------------------
+  Mock API examples & Notes
+-------------------------
+- Khi chuyển sang ASP.NET Core, thay phần mock (delay + array ops) bằng:
+  - GET:  fetch('/api/departments') -> load data
+  - POST: fetch('/api/departments', {method:'POST', body: JSON.stringify(newItem)})
+  - PUT: fetch('/api/departments/{ma}', {method:'PUT', body: JSON.stringify(item)})
+  - DELETE: fetch('/api/departments/{ma}', {method:'DELETE'})
+- Với file (avatar) bạn có 2 cách:
+  - Lưu DataURL (như hiện tại) — tiện demo, KHÔNG dùng cho production.
+  - Upload file lên server (multipart/form-data), server lưu file và trả URL; client dùng URL đó.
+------------------------- */
+
+</script>
+</body>
+</html>

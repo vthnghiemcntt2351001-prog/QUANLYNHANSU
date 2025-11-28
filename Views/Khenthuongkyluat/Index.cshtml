@@ -13,109 +13,124 @@
 
         <div class="card-body">
             <!-- Thanh tìm kiếm và lọc -->
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm nhân viên...">
+            <div class="row mb-3 g-2">
+                <div class="col-md-4">
+                    <input id="searchName" type="text" class="form-control" placeholder="Tìm kiếm nhân viên...">
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select">
-                        <option value="">Tất cả</option>
+                    <select id="filterDept" class="form-select">
+                        <option value="">Tất cả phòng ban</option>
+                        <option value="Phòng Kế Toán">Phòng Kế Toán</option>
+                        <option value="Phòng Hành Chính">Phòng Hành Chính</option>
+                        <option value="Phòng IT">Phòng IT</option>
+                        <option value="Phòng Marketing">Phòng Marketing</option>
+                        <option value="Phòng Nhân Sự">Phòng Nhân Sự</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filterType" class="form-select">
+                        <option value="">Tất cả loại</option>
                         <option value="Khen thưởng">Khen thưởng</option>
                         <option value="Kỷ luật">Kỷ luật</option>
                     </select>
                 </div>
-                <div class="col-md-3 text-end">
-                    <button class="btn btn-secondary">Lọc</button>
+                <div class="col-md-2 text-end">
+                    <button class="btn btn-secondary" onclick="applyFilter()">Lọc</button>
+                    <button class="btn btn-outline-secondary" onclick="resetFilter()">Reset</button>
                 </div>
             </div>
 
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Tên nhân viên</th>
-                        <th>Phòng ban</th>
-                        <th>Loại</th>
-                        <th>Lý do</th>
-                        <th>Ngày áp dụng</th>
-                        <th>Người duyệt</th>
-                        <th>Ghi chú</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>Phòng Kế Toán</td>
-                        <td><span class="badge bg-success">Khen thưởng</span></td>
-                        <td>Hoàn thành xuất sắc công việc quý III</td>
-                        <td>01/11/2025</td>
-                        <td>Trần Thị B</td>
-                        <td>Thưởng 2.000.000đ</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></button>
-                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Trần Thị C</td>
-                        <td>Phòng Hành Chính</td>
-                        <td><span class="badge bg-danger">Kỷ luật</span></td>
-                        <td>Đi làm trễ nhiều lần</td>
-                        <td>03/11/2025</td>
-                        <td>Nguyễn Văn D</td>
-                        <td>Cảnh cáo</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></button>
-                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Lê Văn E</td>
-                        <td>Phòng IT</td>
-                        <td><span class="badge bg-success">Khen thưởng</span></td>
-                        <td>Đề xuất và triển khai phần mềm quản lý mới</td>
-                        <td>05/11/2025</td>
-                        <td>Phạm Quốc F</td>
-                        <td>Thưởng 1.500.000đ</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></button>
-                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Phan Thị G</td>
-                        <td>Phòng Marketing</td>
-                        <td><span class="badge bg-success">Khen thưởng</span></td>
-                        <td>Tạo chiến dịch quảng bá hiệu quả</td>
-                        <td>08/11/2025</td>
-                        <td>Võ Thị H</td>
-                        <td>Thưởng 1.000.000đ</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></button>
-                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Đỗ Văn I</td>
-                        <td>Phòng Nhân Sự</td>
-                        <td><span class="badge bg-danger">Kỷ luật</span></td>
-                        <td>Không hoàn thành báo cáo tháng</td>
-                        <td>09/11/2025</td>
-                        <td>Trần Thị B</td>
-                        <td>Nhắc nhở</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></button>
-                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Bảng dữ liệu -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="rewardTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Tên nhân viên</th>
+                            <th>Phòng ban</th>
+                            <th>Loại</th>
+                            <th>Lý do</th>
+                            <th>Ngày áp dụng</th>
+                            <th>Người duyệt</th>
+                            <th>Ghi chú</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu mẫu -->
+                        <tr>
+                            <td>1</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>Phòng Kế Toán</td>
+                            <td><span class="badge bg-success clickable" onclick="filterByType('Khen thưởng')">Khen thưởng</span></td>
+                            <td>Hoàn thành xuất sắc công việc quý III</td>
+                            <td>01/11/2025</td>
+                            <td>Trần Thị B</td>
+                            <td>Thưởng 2.000.000đ</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Trần Thị C</td>
+                            <td>Phòng Hành Chính</td>
+                            <td><span class="badge bg-danger clickable" onclick="filterByType('Kỷ luật')">Kỷ luật</span></td>
+                            <td>Đi làm trễ nhiều lần</td>
+                            <td>03/11/2025</td>
+                            <td>Nguyễn Văn D</td>
+                            <td>Cảnh cáo</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Lê Văn E</td>
+                            <td>Phòng IT</td>
+                            <td><span class="badge bg-success clickable" onclick="filterByType('Khen thưởng')">Khen thưởng</span></td>
+                            <td>Đề xuất và triển khai phần mềm quản lý mới</td>
+                            <td>05/11/2025</td>
+                            <td>Phạm Quốc F</td>
+                            <td>Thưởng 1.500.000đ</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Phan Thị G</td>
+                            <td>Phòng Marketing</td>
+                            <td><span class="badge bg-success clickable" onclick="filterByType('Khen thưởng')">Khen thưởng</span></td>
+                            <td>Tạo chiến dịch quảng bá hiệu quả</td>
+                            <td>08/11/2025</td>
+                            <td>Võ Thị H</td>
+                            <td>Thưởng 1.000.000đ</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Đỗ Văn I</td>
+                            <td>Phòng Nhân Sự</td>
+                            <td><span class="badge bg-danger clickable" onclick="filterByType('Kỷ luật')">Kỷ luật</span></td>
+                            <td>Không hoàn thành báo cáo tháng</td>
+                            <td>09/11/2025</td>
+                            <td>Trần Thị B</td>
+                            <td>Nhắc nhở</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -129,38 +144,38 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="addForm">
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Tên nhân viên</label>
-                            <input type="text" class="form-control" placeholder="Nhập tên nhân viên">
+                            <input type="text" class="form-control" placeholder="Nhập tên nhân viên" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Phòng ban</label>
-                            <input type="text" class="form-control" placeholder="Nhập phòng ban">
+                            <input type="text" class="form-control" placeholder="Nhập phòng ban" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Loại</label>
-                            <select class="form-select">
+                            <select class="form-select" required>
                                 <option value="Khen thưởng">Khen thưởng</option>
                                 <option value="Kỷ luật">Kỷ luật</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Ngày áp dụng</label>
-                            <input type="date" class="form-control">
+                            <input type="date" class="form-control" required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Lý do</label>
-                        <textarea class="form-control" rows="2" placeholder="Nhập lý do..."></textarea>
+                        <textarea class="form-control" rows="2" placeholder="Nhập lý do..." required></textarea>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Người duyệt</label>
-                            <input type="text" class="form-control" placeholder="Nhập người duyệt">
+                            <input type="text" class="form-control" placeholder="Nhập người duyệt" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Ghi chú</label>
@@ -171,10 +186,102 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button class="btn btn-primary">Lưu</button>
+                <button class="btn btn-primary" onclick="saveNew()">Lưu</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal sửa -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="editModalLabel">Sửa khen thưởng / kỷ luật</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <!-- Form giống Add modal -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button class="btn btn-warning" onclick="saveEdit()">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modal xóa -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa bản ghi này?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .clickable { cursor: pointer; }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Lọc bảng theo input và dropdown
+        function applyFilter() {
+            var name = document.getElementById('searchName').value.toLowerCase();
+            var dept = document.getElementById('filterDept').value.toLowerCase();
+            var type = document.getElementById('filterType').value.toLowerCase();
+
+            var table = document.getElementById('rewardTable').getElementsByTagName('tbody')[0];
+            Array.from(table.rows).forEach(function(row) {
+                var rowName = row.cells[1].textContent.toLowerCase();
+                var rowDept = row.cells[2].textContent.toLowerCase();
+                var rowType = row.cells[3].textContent.toLowerCase();
+                row.style.display = 
+                    (rowName.includes(name) || !name) &&
+                    (rowDept.includes(dept) || !dept) &&
+                    (rowType.includes(type) || !type)
+                    ? '' : 'none';
+            });
+        }
+
+        // Click vào badge lọc theo loại
+        function filterByType(type) {
+            var table = document.getElementById('rewardTable').getElementsByTagName('tbody')[0];
+            Array.from(table.rows).forEach(function(row) {
+                var rowType = row.cells[3].textContent.trim();
+                row.style.display = (rowType === type) ? '' : 'none';
+            });
+
+            document.getElementById('filterType').value = type;
+        }
+
+        // Reset tất cả filter
+        function resetFilter() {
+            document.getElementById('searchName').value = '';
+            document.getElementById('filterDept').value = '';
+            document.getElementById('filterType').value = '';
+            var table = document.getElementById('rewardTable').getElementsByTagName('tbody')[0];
+            Array.from(table.rows).forEach(row => row.style.display = '');
+        }
+
+        // Placeholder cho backend
+        function saveNew() { alert('Chức năng thêm mới sẽ được cài backend'); }
+        function saveEdit() { alert('Chức năng sửa sẽ được cài backend'); }
+        function confirmDelete() { alert('Chức năng xóa sẽ được cài backend'); }
+    </script>
+}
