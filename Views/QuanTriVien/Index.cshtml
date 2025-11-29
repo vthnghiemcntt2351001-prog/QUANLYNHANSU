@@ -4,69 +4,92 @@
 }
 
 <style>
+    /* --- KHU VỰC CSS CẢI TIẾN --- */
     body {
-        background-color: #f8f9fb;
-        font-family: "Segoe UI", sans-serif;
+        background-color: #f0f2f5; /* Nền xám nhạt hiện đại */
+        font-family: 'Poppins', 'Segoe UI', sans-serif; /* Sử dụng font hiện đại hơn */
+    }
+
+    .container.mt-5 {
+        padding-top: 30px;
     }
 
     .page-header {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
     .page-header h2 {
-        color: #0d6efd;
-        font-weight: 600;
+        color: #172b4d; /* Màu chữ đậm cho tiêu đề */
+        font-weight: 700;
+        border-left: 5px solid #0d6efd; /* Đường viền nhấn mạnh */
+        padding-left: 15px;
     }
 
     .filter-bar {
+        background-color: white;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Shadow nhẹ nhàng */
         display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
+        gap: 15px;
+        align-items: center;
     }
 
     .user-table th {
-        background-color: #0d6efd;
+        background-color: #0d6efd; /* Màu header chính */
         color: white;
         text-align: center;
+        font-weight: 600;
+        vertical-align: middle;
+        white-space: nowrap; /* Ngăn tiêu đề bị xuống dòng */
     }
 
     .user-table td {
         vertical-align: middle;
         text-align: center;
+        padding: 12px 8px; /* Tăng padding */
     }
 
     .user-table tr:hover {
-        background-color: #eef5ff;
+        background-color: #e6f7ff; /* Hover màu xanh nhạt hơn */
+        cursor: pointer;
     }
 
+    /* Nút Thêm mới */
     .btn-add {
-        background: linear-gradient(135deg, #0d6efd, #00b4d8);
+        background: linear-gradient(45deg, #0d6efd, #007bff);
         color: white;
         border: none;
-        border-radius: 8px;
-        padding: 8px 14px;
-        transition: 0.3s;
+        border-radius: 50px; /* Nút tròn hơn */
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
     .btn-add:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(13, 110, 253, 0.4);
     }
 
+    /* Modal Styling */
     .modal-content {
-        border-radius: 12px;
+        border-radius: 15px;
+        border: none;
     }
 
     .modal-header {
-        background: linear-gradient(135deg, #0d6efd, #00b4d8);
+        background: #0d6efd; /* Đơn giản hóa background modal */
         color: white;
+        border-radius: 15px 15px 0 0;
+        border-bottom: none;
     }
 
     .btn-submit {
-        background: #0d6efd;
+        background: #28a745; /* Màu Xanh lá (Success) cho nút tạo mới */
         color: white;
         border: none;
         width: 100%;
@@ -76,10 +99,10 @@
     }
 
     .btn-submit:hover {
-        background: #0b5ed7;
+        background: #218838;
     }
 
-    /* 🔔 Toast notification góc phải */
+    /* Toast notification */
     .toast-container {
         position: fixed;
         top: 20px;
@@ -88,52 +111,65 @@
     }
 
     .toast {
-        border-left: 6px solid #0d6efd;
+        border-left: 6px solid;
         box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         border-radius: 10px;
-        padding: 10px 16px;
     }
 
     .toast-success {
-        border-left-color: #198754;
+        border-left-color: #28a745; /* Xanh lá */
     }
 
     .toast-danger {
-        border-left-color: #dc3545;
+        border-left-color: #dc3545; /* Đỏ */
     }
 
     .toast-warning {
-        border-left-color: #ffc107;
+        border-left-color: #ffc107; /* Vàng */
+    }
+
+    /* Nút Thao tác trong bảng */
+    .action-btn {
+        margin: 0 3px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.85rem;
     }
 </style>
 
 <div class="container mt-5">
     <div class="page-header">
-        <h2>👥 Quản lý người dùng</h2>
-        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#modalThemNguoiDung">➕ Thêm người dùng mới</button>
+        <h2><i class="fas fa-users"></i> Quản lý người dùng</h2>
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#modalThemNguoiDung">
+            <i class="fas fa-plus-circle"></i> Thêm người dùng mới
+        </button>
     </div>
 
     <div class="filter-bar">
+        <label for="roleFilter" class="form-label mb-0 fw-bold text-muted">Lọc theo Vai trò:</label>
         <select id="roleFilter" class="form-select" style="width: 180px;">
-            <option value="all">Tất cả vai trò</option>
+            <option value="all">Tất cả</option>
             <option value="Admin">Admin</option>
             <option value="Quản lý">Quản lý</option>
             <option value="Nhân viên">Nhân viên</option>
         </select>
-        <input type="text" id="searchInput" class="form-control" placeholder="🔍 Tìm theo tên hoặc email..." style="width: 250px;">
+        <div class="input-group" style="width: 250px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo tên hoặc email...">
+        </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-lg border-0" style="border-radius: 12px;">
         <div class="table-responsive">
-            <table class="table table-bordered table-striped user-table" id="userTable">
+            <table class="table table-hover user-table" id="userTable">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" /></th>
+                        <th>#</th>
                         <th>Tên đăng nhập</th>
                         <th>Email</th>
                         <th>Mật khẩu</th>
-                        <th>Vai trò</th>
-                        <th>Truy cập gần nhất</th>
+                        <th><i class="fas fa-user-tag"></i> Vai trò</th>
+                        <th><i class="fas fa-clock"></i> Truy cập gần nhất</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
@@ -143,11 +179,11 @@
                         <td>admin01</td>
                         <td>admin@ntv.vn</td>
                         <td>••••••</td>
-                        <td>Admin</td>
+                        <td><span class="badge bg-primary">Admin</span></td>
                         <td>2025-11-06 18:30</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick="suaNguoiDung(this)">✏️ Sửa</button>
-                            <button class="btn btn-danger btn-sm" onclick="xoaNguoiDung(this)">🗑️ Xóa</button>
+                            <button class="btn btn-warning action-btn" onclick="suaNguoiDung(this)"><i class="fas fa-edit"></i> Sửa</button>
+                            <button class="btn btn-danger action-btn" onclick="xoaNguoiDung(this)"><i class="fas fa-trash-alt"></i> Xóa</button>
                         </td>
                     </tr>
                     <tr>
@@ -155,11 +191,11 @@
                         <td>nv001</td>
                         <td>nhanvien@ntv.vn</td>
                         <td>••••••</td>
-                        <td>Nhân viên</td>
+                        <td><span class="badge bg-secondary">Nhân viên</span></td>
                         <td>2025-11-06 17:20</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick="suaNguoiDung(this)">✏️ Sửa</button>
-                            <button class="btn btn-danger btn-sm" onclick="xoaNguoiDung(this)">🗑️ Xóa</button>
+                            <button class="btn btn-warning action-btn" onclick="suaNguoiDung(this)"><i class="fas fa-edit"></i> Sửa</button>
+                            <button class="btn btn-danger action-btn" onclick="xoaNguoiDung(this)"><i class="fas fa-trash-alt"></i> Xóa</button>
                         </td>
                     </tr>
                 </tbody>
@@ -168,16 +204,14 @@
     </div>
 </div>
 
-<!-- Toast container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Modal thêm người dùng -->
 <div class="modal fade" id="modalThemNguoiDung" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content shadow">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">➕ Thêm người dùng mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title fw-bold"><i class="fas fa-user-plus"></i> Thêm người dùng mới</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="formThemNguoiDung">
@@ -208,13 +242,12 @@
     </div>
 </div>
 
-<!-- Modal sửa -->
 <div class="modal fade" id="modalSuaNguoiDung" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content shadow">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">✏️ Chỉnh sửa người dùng</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title fw-bold"><i class="fas fa-user-edit"></i> Chỉnh sửa người dùng</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="formSuaNguoiDung">
@@ -262,7 +295,7 @@
     document.getElementById("roleFilter").addEventListener("change", function () {
         const filter = this.value;
         document.querySelectorAll("#userList tr").forEach(row => {
-            const role = row.cells[4].textContent.trim();
+            const role = row.cells[4].textContent.trim().replace(/<\/?span[^>]*>/g, '').trim(); // Loại bỏ badge span khi so sánh
             row.style.display = (filter === "all" || role === filter) ? "" : "none";
         });
     });
@@ -274,7 +307,12 @@
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         const role = document.getElementById("role").value;
-        const now = new Date().toLocaleString();
+        const now = new Date().toLocaleString('vi-VN');
+
+        let badgeClass = '';
+        if (role === 'Admin') badgeClass = 'bg-primary';
+        else if (role === 'Quản lý') badgeClass = 'bg-info text-dark';
+        else badgeClass = 'bg-secondary';
 
         const newRow = `
             <tr>
@@ -282,11 +320,11 @@
                 <td>${username}</td>
                 <td>${email}</td>
                 <td>${password}</td>
-                <td>${role}</td>
+                <td><span class="badge ${badgeClass}">${role}</span></td>
                 <td>${now}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="suaNguoiDung(this)">✏️ Sửa</button>
-                    <button class="btn btn-danger btn-sm" onclick="xoaNguoiDung(this)">🗑️ Xóa</button>
+                    <button class="btn btn-warning action-btn" onclick="suaNguoiDung(this)"><i class="fas fa-edit"></i> Sửa</button>
+                    <button class="btn btn-danger action-btn" onclick="xoaNguoiDung(this)"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </td>
             </tr>`;
         document.getElementById("userList").insertAdjacentHTML("beforeend", newRow);
@@ -302,18 +340,26 @@
         document.getElementById("editUsername").value = rowDangSua.cells[1].textContent;
         document.getElementById("editEmail").value = rowDangSua.cells[2].textContent;
         document.getElementById("editPassword").value = rowDangSua.cells[3].textContent;
-        document.getElementById("editRole").value = rowDangSua.cells[4].textContent.trim();
+        // Lấy nội dung text của badge (Vai trò)
+        const currentRole = rowDangSua.cells[4].querySelector('.badge') ? rowDangSua.cells[4].querySelector('.badge').textContent.trim() : rowDangSua.cells[4].textContent.trim();
+        document.getElementById("editRole").value = currentRole;
         new bootstrap.Modal(document.getElementById('modalSuaNguoiDung')).show();
     }
 
     // 💾 Lưu thay đổi
     document.getElementById("formSuaNguoiDung").addEventListener("submit", function (e) {
         e.preventDefault();
+        const newRole = document.getElementById("editRole").value;
+        let badgeClass = '';
+        if (newRole === 'Admin') badgeClass = 'bg-primary';
+        else if (newRole === 'Quản lý') badgeClass = 'bg-info text-dark';
+        else badgeClass = 'bg-secondary';
+
         rowDangSua.cells[1].textContent = document.getElementById("editUsername").value;
         rowDangSua.cells[2].textContent = document.getElementById("editEmail").value;
         rowDangSua.cells[3].textContent = document.getElementById("editPassword").value;
-        rowDangSua.cells[4].textContent = document.getElementById("editRole").value;
-        rowDangSua.cells[5].textContent = new Date().toLocaleString(); // cập nhật "truy cập gần nhất"
+        rowDangSua.cells[4].innerHTML = `<span class="badge ${badgeClass}">${newRole}</span>`; // Cập nhật cả badge
+        rowDangSua.cells[5].textContent = new Date().toLocaleString('vi-VN');
 
         bootstrap.Modal.getInstance(document.getElementById('modalSuaNguoiDung')).hide();
         showToast("✏️ Cập nhật thông tin người dùng thành công!", "warning");
@@ -321,7 +367,7 @@
 
     // 🗑️ Xóa
     function xoaNguoiDung(btn) {
-        if (confirm("Bạn có chắc muốn xóa người dùng này không?")) {
+        if (confirm("Bạn có chắc muốn xóa người dùng này không? Hành động này không thể hoàn tác.")) {
             btn.closest("tr").remove();
             showToast("🗑️ Đã xóa người dùng!", "danger");
         }

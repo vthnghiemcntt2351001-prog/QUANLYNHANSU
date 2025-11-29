@@ -36,25 +36,21 @@
         margin-top: 8px;
     }
 
-    /* Card nhân viên nổi bật */
+    /* Card nhân viên nổi bật - Đã tối ưu cho 4 cột */
     .employee-card {
         transition: all 0.3s ease;
         border-radius: 16px;
-        overflow: hidden;
         background: #fff;
+        border: 1px solid #e0f2ff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        height: 100%; /* Đảm bảo chiều cao bằng nhau trong grid */
     }
 
     .employee-card:hover {
-        transform: scale(1.04);
-        box-shadow: 0 8px 20px rgba(0, 100, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 100, 255, 0.15);
     }
-
-    .employee-card img {
-        height: 220px;
-        object-fit: cover;
-        border-bottom: 3px solid #2563eb;
-    }
-
+    
     footer {
         text-align: center;
         padding: 20px 0;
@@ -82,11 +78,9 @@
     }
 </style>
 
-<!-- ===================== NỘI DUNG CHÍNH ===================== -->
 <main class="main">
     <div class="container-fluid py-4">
 
-        <!-- Tiêu đề Dashboard -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h3 class="fw-bold text-primary mb-1">Dashboard</h3>
@@ -94,7 +88,6 @@
             </div>
         </div>
 
-        <!-- Thống kê tổng quan -->
         <div class="row g-4 mb-4">
             <div class="col-md-3">
                 <div class="card card-stat p-3 text-center border-start border-primary border-4">
@@ -122,7 +115,6 @@
             </div>
         </div>
 
-        <!-- Biểu đồ -->
         <div class="row g-4 mb-5">
             <div class="col-lg-8">
                 <div class="chart-card">
@@ -138,23 +130,37 @@
             </div>
         </div>
 
-        <!-- Danh sách nhân viên nổi bật -->
         <div class="card shadow-lg p-4 border-0 rounded-4">
-            <h3 class="text-center text-primary mb-4 fw-bold">🌟 Nhân viên nổi bật</h3>
+            <h3 class="text-center text-primary mb-4 fw-bold">🌟 Nhân viên nổi bật Tháng 12</h3>
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-                @for (int i = 1; i <= 6; i++)
+                @for (int i = 1; i <= 4; i++)
                 {
                     <div class="col">
-                        <div class="card employee-card text-center border-0">
-                            <img src="/image/avatar.jpg" class="card-img-top" alt="Nhân viên @(i)">
-                            <div class="card-body">
-                                <h5 class="card-title fw-bold">Nhân viên @(i)</h5>
-                                <p class="text-muted mb-1">MS00@(i)</p>
-                                <small class="text-secondary">Phòng ban @(i % 3 + 1)</small>
+                        <div class="card employee-card p-3 border-0">
+                            <div class="d-flex align-items-start mb-3 border-bottom pb-2">
+                                <i class="fas fa-medal fa-2x text-warning me-3"></i>
+                                <div>
+                                    <h5 class="card-title fw-bold mb-0 text-primary">Lê Văn B (@(i))</h5>
+                                    <small class="text-muted">Phòng ban @(i)</small>
+                                </div>
                             </div>
-                            <div class="card-footer bg-light">
-                                <a href="#" class="fw-bold text-primary text-decoration-none">Chi tiết ></a>
+                            
+                            <p class="mb-2">
+                                <strong class="text-dark">MSNV:</strong> 
+                                <span class="text-secondary">MS00@(i)</span>
+                            </p>
+                            <p class="mb-2">
+                                <strong class="text-dark">Thành tích:</strong> 
+                                <span class="text-success fw-bold">Vượt mục tiêu @(100 + i * 5)%</span>
+                            </p>
+                            <p class="mb-2">
+                                <strong class="text-dark">Chức vụ:</strong> 
+                                <span class="text-secondary">Trưởng nhóm Kinh doanh</span>
+                            </p>
+
+                            <div class="mt-3 text-end">
+                                <a href="#" class="fw-bold text-primary text-decoration-none small">Xem hồ sơ ></a>
                             </div>
                         </div>
                     </div>
@@ -162,13 +168,13 @@
             </div>
         </div>
 
-        <!-- Footer -->
         <footer>© 2025 Hệ thống Quản lý Nhân sự NTV — Liên hệ: lienhe@qlns.com | 0866 701 733</footer>
     </div>
 </main>
 
-<!-- ===================== SCRIPT BIỂU ĐỒ (Chart.js) ===================== -->
 @section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Biểu đồ cột
@@ -217,5 +223,3 @@
         });
     </script>
 }
-
-
