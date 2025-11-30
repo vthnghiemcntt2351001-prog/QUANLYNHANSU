@@ -1,0 +1,316 @@
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    body { background-color: #f0f2f5; font-family: 'Poppins', 'Segoe UI', sans-serif; }
+    .container.mt-5 { padding-top: 30px; }
+    .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; }
+    .page-header h2 { color:#172b4d; font-weight:700; border-left:5px solid #0d6efd; padding-left:15px; }
+    .filter-bar { background-color:white; padding:15px; border-radius:12px; margin-bottom:20px; display:flex; gap:15px; align-items:center; box-shadow:0 4px 6px rgba(0,0,0,0.05); }
+    .user-table th { background-color:#0d6efd; color:white; text-align:center; font-weight:600; vertical-align:middle; white-space:nowrap; }
+    .user-table td { vertical-align:middle; text-align:center; padding:12px 8px; }
+    .user-table tr:hover { background-color:#e6f7ff; cursor:pointer; }
+    .btn-add { background: linear-gradient(45deg, #0d6efd, #007bff); color:white; border:none; border-radius:50px; padding:10px 20px; font-weight:600; transition:all 0.3s ease; }
+    .btn-add:hover { transform:scale(1.05); box-shadow:0 8px 15px rgba(13,110,253,0.4); }
+    .modal-content { border-radius:15px; border:none; }
+    .modal-header { background:#0d6efd; color:white; border-radius:15px 15px 0 0; border-bottom:none; }
+    .btn-submit { background:#28a745; color:white; border:none; width:100%; padding:10px; border-radius:8px; transition:0.3s; }
+    .btn-submit:hover { background:#218838; }
+    .toast-container { position:fixed; top:20px; right:20px; z-index:2000; }
+    .toast { border-left:6px solid; box-shadow:0 5px 15px rgba(0,0,0,0.15); border-radius:10px; }
+    .toast-success { border-left-color:#28a745; }
+    .toast-danger { border-left-color:#dc3545; }
+    .toast-warning { border-left-color:#ffc107; }
+    .action-btn { margin:0 3px; padding:4px 8px; border-radius:6px; font-size:0.85rem; }
+</style>
+
+<div class="container mt-5">
+    <div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Quản lý người dùng</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-add" data-toggle="modal" data-target="#modalThemNguoiDung">
+                    <i class="fas fa-plus-circle"></i> Thêm người dùng mới
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="filter-bar">
+        <label for="roleFilter" class="form-label mb-0 fw-bold text-muted">Lọc theo Vai trò:</label>
+        <select id="roleFilter" class="form-select" style="width:180px;">
+            <option value="all">Tất cả</option>
+            <option value="Admin">Admin</option>
+            <option value="NhanSu">Nhân sự</option>
+            <option value="NhanVien">Nhân viên</option>
+        </select>
+        <div class="input-group" style="width:250px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo tên hoặc email...">
+        </div>
+    </div>
+
+    <div class="card shadow-lg border-0" style="border-radius:12px;">
+        <div class="table-responsive">
+            <table class="table table-hover user-table" id="userTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Email</th>
+                        <th>Mật khẩu</th>
+                        <th>Vai trò</th>
+                        <th>Truy cập gần nhất</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="userList"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Modal Thêm người dùng -->
+<div class="modal fade" id="modalThemNguoiDung" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="fas fa-user-plus"></i> Thêm người dùng mới</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formThemNguoiDung">
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vai trò</label>
+                        <select class="form-select form-control" id="role">
+                                
+                                <option value="Admin">Admin</option>
+                                <option value="NhanSu">Nhân sự</option>
+                                <option value="NhanVien">Nhân viên</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit mt-3">Tạo tài khoản</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalSuaNguoiDung" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="fas fa-user-edit"></i> Chỉnh sửa người dùng</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formSuaNguoiDung">
+                    <input type="hidden" id="editId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="editUsername" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="text" class="form-control" id="editPassword" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Vai trò</label>
+                        <select class="form-control" id="editRole">       
+                            <option value="Admin">Admin</option>
+                            <option value="NhanSu">Nhân sự</option>
+                            <option value="NhanVien">Nhân viên</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit mt-3">Lưu thay đổi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+let rowDangSua = null;
+
+// 🔄 Load danh sách người dùng
+function loadUsers() {
+    fetch('@Url.Action("GetUsers","QuanTriVien")')
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("userList");
+            tbody.innerHTML = "";
+            data.forEach((user, index) => {
+                let badgeClass = user.role === 'Admin' ? 'bg-primary' :
+                                 user.role === 'Nhân sự' ? 'bg-info text-dark' : 'bg-secondary';
+                let row = document.createElement("tr");
+                row.dataset.id = user.id;
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.password}</td>
+                    <td><span class="badge ${badgeClass}">${user.role}</span></td>
+                    <td>${new Date(user.lastAccess).toLocaleString('vi-VN')}</td>
+                    <td>
+                        <button class="btn btn-warning action-btn" onclick="suaNguoiDung(this)"><i class="fas fa-edit"></i> Sửa</button>
+                        <button class="btn btn-danger action-btn" onclick="xoaNguoiDung(this)"><i class="fas fa-trash-alt"></i> Xóa</button>
+                    </td>`;
+                tbody.appendChild(row);
+            });
+        });
+}
+loadUsers();
+
+// ➕ Thêm người dùng
+document.getElementById("formThemNguoiDung").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const data = {
+        username: username.value,
+        email: email.value,
+        password: password.value,
+        role: role.value
+    };
+    fetch('@Url.Action("AddUser","QuanTriVien")', {
+        method: "POST",
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+    }).then(res => res.json()).then(res => {
+        if(res.success){
+            loadUsers();
+            $("#modalThemNguoiDung").modal("hide");
+            this.reset();
+            showToast(res.message,"success");
+        }
+    });
+});
+
+// ✏️ Sửa người dùng
+function suaNguoiDung(btn){
+    rowDangSua = btn.closest("tr");
+    editId.value = rowDangSua.dataset.id;
+    editUsername.value = rowDangSua.cells[1].innerText;
+    editEmail.value = rowDangSua.cells[2].innerText;
+    editPassword.value = rowDangSua.cells[3].innerText;
+    editRole.value = rowDangSua.cells[4].innerText.trim();
+
+    $("#modalSuaNguoiDung").modal("show");
+}
+
+// 💾 Lưu thay đổi
+document.getElementById("formSuaNguoiDung").addEventListener("submit", function(e){
+    e.preventDefault();
+    const data = {
+        id: parseInt(editId.value),
+        username: editUsername.value,
+        email: editEmail.value,
+        password: editPassword.value,
+        role: editRole.value
+    };
+    fetch('@Url.Action("UpdateUser","QuanTriVien")',{
+        method:"POST",
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(data)
+    }).then(res=>res.json()).then(res=>{
+        if(res.success){
+            loadUsers();
+            $("#modalSuaNguoiDung").modal("hide");
+            showToast(res.message,"warning");
+        }
+    });
+});
+
+// 🗑 Xóa người dùng
+function xoaNguoiDung(btn){
+    if(confirm("Bạn có chắc muốn xóa người dùng này không?")){
+        const id = parseInt(btn.closest("tr").dataset.id);
+        fetch('@Url.Action("DeleteUser","QuanTriVien")',{
+            method:"POST",
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(id)
+        }).then(res=>res.json()).then(res=>{
+            if(res.success){
+                loadUsers();
+                showToast(res.message,"danger");
+            }
+        });
+    }
+}
+
+// 🔔 Toast
+function showToast(message,type){
+    const toastId = "toast"+Date.now();
+    const bgClass = type==="success"?"toast-success":type==="warning"?"toast-warning":"toast-danger";
+    const toastHTML = `
+        <div class="toast align-items-center text-dark bg-white border-0 ${bgClass}" id="${toastId}" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>`;
+    document.getElementById("toastContainer").insertAdjacentHTML("beforeend",toastHTML);
+    const toastEl = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastEl,{delay:3000});
+    toast.show();
+    toastEl.addEventListener('hidden.bs.toast',()=>toastEl.remove());
+}
+
+// 🔍 Tìm kiếm
+document.getElementById("searchInput").addEventListener("input", function () {
+    const keyword = this.value.toLowerCase();
+    document.querySelectorAll("#userList tr").forEach(row => {
+        const name = row.cells[1].textContent.toLowerCase();
+        const email = row.cells[2].textContent.toLowerCase();
+        row.style.display = name.includes(keyword) || email.includes(keyword) ? "" : "none";
+    });
+});
+
+// 🎚 Lọc vai trò
+document.getElementById("roleFilter").addEventListener("change", function () {
+    const filter = this.value.trim();
+    document.querySelectorAll("#userList tr").forEach(row => {
+        const role = row.cells[4].textContent.trim();
+        row.style.display = (filter === "all" || role === filter) ? "" : "none";
+    });
+});
+</script>
+

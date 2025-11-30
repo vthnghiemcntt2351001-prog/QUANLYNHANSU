@@ -1,0 +1,261 @@
+@{
+    ViewData["Title"] = "Đăng ký nghỉ phép";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 30px 0;
+    }
+
+    .page-header h2 {
+        color: #007bff;
+        font-weight: 600;
+    }
+
+    .btn-action {
+        background: linear-gradient(135deg, #0d6efd, #00b4d8);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        transition: 0.3s;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(13,110,253,0.3);
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #formDangKyNghi {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+   
+
+    .card-form {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .leave-table th {
+        background-color: #0d6efd;
+        color: white;
+        text-align: center;
+    }
+
+    .leave-table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .badge-pending {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .badge-approved {
+        background-color: #198754;
+    }
+
+    .badge-rejected {
+        background-color: #dc3545;
+    }
+
+    /* Toast góc phải */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
+    }
+
+    .toast {
+        border-left: 5px solid #0d6efd;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .toast-success {
+        border-left-color: #198754;
+    }
+
+    .toast-warning {
+        border-left-color: #ffc107;
+    }
+</style>
+
+
+<div class="container mt-4">
+    <div class="page-header">
+        <h2>📝 Đăng ký nghỉ phép</h2>
+        <div>
+            <button id="btnShowForm" class="btn btn-action me-2">➕ Đăng ký nghỉ phép</button>
+            <button id="btnCheckStatus" class="btn btn-success"><i class="bi bi-check2-circle"></i> Kiểm tra phê duyệt</button>
+        </div>
+    </div>
+
+    <!-- Form đăng ký nghỉ -->
+    <div id="formDangKyNghi" class="card-form">
+        <h5 class="text-primary mb-3">📋 Điền thông tin nghỉ phép</h5>
+        <form id="formNghi">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="date" class="form-control" id="fromDate" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="date" class="form-control" id="toDate" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Loại nghỉ</label>
+                    <select class="form-select" id="type">
+                        <option>Nghỉ phép năm</option>
+                        <option>Nghỉ ốm</option>
+                        <option>Nghỉ việc riêng</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Lý do</label>
+                    <input type="text" class="form-control" id="reason" placeholder="Nhập lý do nghỉ..." required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ghi chú (nếu có)</label>
+                <textarea class="form-control" id="note" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-2"><i class="bi bi-send"></i> Gửi đơn đăng ký</button>
+        </form>
+    </div>
+
+    <!-- Bảng đơn đã gửi -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="text-primary mb-3">📅 Lịch sử đơn nghỉ phép</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped leave-table" id="leaveTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Từ ngày</th>
+                            <th>Đến ngày</th>
+                            <th>Loại nghỉ</th>
+                            <th>Lý do</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaveList">
+                        <tr>
+                            <td>1</td>
+                            <td>01/11/2025</td>
+                            <td>03/11/2025</td>
+                            <td>Nghỉ phép năm</td>
+                            <td>Về quê</td>
+                            <td><span class="badge badge-approved">Đã duyệt</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+
+<script>
+    let donIndex = 2;
+    let currentStatus = "pending";
+
+    // 👉 Hiện / Ẩn form đăng ký
+    document.getElementById("btnShowForm").addEventListener("click", function () {
+        const form = document.getElementById("formDangKyNghi");
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    });
+
+    // 📨 Gửi đơn đăng ký
+    document.getElementById("formNghi").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const from = document.getElementById("fromDate").value;
+        const to = document.getElementById("toDate").value;
+        const type = document.getElementById("type").value;
+        const reason = document.getElementById("reason").value;
+
+        const newRow = `
+            <tr>
+                <td>${donIndex++}</td>
+                <td>${formatDate(from)}</td>
+                <td>${formatDate(to)}</td>
+                <td>${type}</td>
+                <td>${reason}</td>
+                <td><span class="badge badge-pending">Chờ duyệt</span></td>
+            </tr>`;
+        document.getElementById("leaveList").insertAdjacentHTML("beforeend", newRow);
+        showToast("✅ Đơn nghỉ phép đã được gửi!", "success");
+
+        document.getElementById("formNghi").reset();
+        document.getElementById("formDangKyNghi").style.display = "none";
+        currentStatus = "pending";
+    });
+
+    // 🔍 Kiểm tra phê duyệt
+    document.getElementById("btnCheckStatus").addEventListener("click", function () {
+        let message = "";
+        if (currentStatus === "pending") message = "🕒 Đơn của bạn đang chờ duyệt!";
+        else if (currentStatus === "approved") message = "✅ Đơn của bạn đã được phê duyệt!";
+        else message = "❌ Đơn của bạn đã bị từ chối!";
+        showToast(message, "success");
+    });
+
+    // ✅ Format ngày
+    function formatDate(dateStr) {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString("vi-VN");
+    }
+
+    // 🔔 Toast đẹp góc phải
+    function showToast(message, type) {
+        const id = "toast" + Date.now();
+        const bg = type === "success" ? "toast-success" : type === "warning" ? "toast-warning" : "";
+        const html = `
+        <div class="toast bg-white text-dark ${bg}" id="${id}" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>`;
+        document.getElementById("toastContainer").insertAdjacentHTML("beforeend", html);
+        const toastEl = document.getElementById(id);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+    }
+</script>
+

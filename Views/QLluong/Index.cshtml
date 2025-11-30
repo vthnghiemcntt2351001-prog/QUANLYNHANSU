@@ -1,0 +1,349 @@
+@{
+    ViewData["Title"] = "Quản lý lương nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+<style>
+    :root {
+        --main-blue: #1d72b8; /* Màu xanh chủ đạo */
+        --dark-blue: #155d8b;
+        --light-bg: #f4f7fa; /* Nền Dashboard nhẹ nhàng */
+        --salary-green: #198754; /* Xanh lá cho số tiền */
+    }
+    body {
+        background-color: var(--light-bg);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .salary-dashboard {
+        max-width: 1500px;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+    
+    /* Thiết kế Card chính */
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* Shadow rõ hơn */
+        background: white;
+    }
+
+    /* Tiêu đề bảng */
+    .table th {
+        background-color: var(--main-blue);
+        color: white;
+        text-align: center;
+        border-color: #ffffff33 !important; /* Viền trắng nhạt */
+    }
+
+    /* Cột số tiền */
+    .salary-cell {
+        font-weight: 700;
+        color: var(--salary-green);
+        text-align: right !important; /* Căn phải cho số tiền */
+        padding-right: 15px;
+    }
+    
+    /* Input Ngày làm */
+    .ngay-lam {
+        max-width: 100px;
+        margin: 0 auto;
+    }
+
+    /* Các nút chức năng */
+    .btn-primary {
+        background-color: var(--main-blue);
+        border: none;
+        font-weight: 600;
+    }
+    .btn-primary:hover {
+        background-color: var(--dark-blue);
+    }
+    .btn-success {
+        background-color: var(--salary-green);
+        border: none;
+        font-weight: 600;
+    }
+    .btn-success:hover {
+        background-color: #146c43;
+    }
+    
+    /* KPI Cards - Mới */
+    .kpi-card {
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border-left: 5px solid var(--main-blue);
+    }
+    .kpi-card h4 {
+        font-weight: 700;
+        margin-top: 5px;
+        color: var(--main-blue);
+    }
+    .kpi-card p {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .kpi-card .display-6 {
+        font-weight: 800;
+        color: var(--main-blue);
+    }
+</style>
+
+<div class="container-fluid salary-dashboard">
+    <h3 class="fw-bold mb-4 text-dark"><i class="fa-solid fa-calculator me-2 text-primary"></i> Quản lý & Tính lương Nhân viên</h3>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+            <div class="card kpi-card border-left-blue">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-users fa-2x text-primary me-3"></i>
+                    <div>
+                        <p class="mb-0">Tổng số Nhân viên</p>
+                        <h4 class="display-6" id="kpiTotalEmployees">5</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card kpi-card border-left-green">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-calendar-days fa-2x text-info me-3"></i>
+                    <div>
+                        <p class="mb-0">Kỳ lương tháng</p>
+                        <h4 class="display-6 text-info" id="kpiCurrentMonth">11/2025</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <div class="card kpi-card border-left-warning">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-coins fa-2x text-success me-3"></i>
+                    <div>
+                        <p class="mb-0">Tổng lương cần chi trả</p>
+                        <h4 class="display-6 text-success" id="kpiTotalSalary">0 VNĐ</h4> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header bg-white p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                 <h4 class="mb-0 text-dark">BẢNG CHẤM CÔNG VÀ TÍNH LƯƠNG</h4>
+                 <div class="d-flex">
+                    <button class="btn btn-success me-2" id="btnTinhLuong">
+                        <i class="fa-solid fa-dollar-sign me-1"></i> Tính lương
+                    </button>
+                    <button class="btn btn-primary" id="btnXuatLuong">
+                        <i class="fa-solid fa-file-excel me-1"></i> Xuất bảng lương
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4 pt-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle" id="tableLuong">
+                    <thead>
+                        <tr>
+                            <th>Mã NV</th>
+                            <th>Họ tên</th>
+                            <th>Chức vụ</th>
+                            <th>Ngày làm việc</th>
+                            <th class="text-right">Lương/ngày (VNĐ)</th>
+                            <th class="text-right">Tổng lương (VNĐ)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bangChamCong">
+                        <tr>
+                            <td class="text-center">NV01</td>
+                            <td>Nguyễn Văn An</td>
+                            <td class="text-center">Nhân viên IT</td>
+                            <td class="text-center"><input type="number" class="form-control text-center ngay-lam" value="26"></td>
+                            <td class="luong-ngay text-right" data-value="500000">500.000</td>
+                            <td class="tong-luong salary-cell">0</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">NV02</td>
+                            <td>Trần Thị Bích</td>
+                            <td class="text-center">Kế toán</td>
+                            <td class="text-center"><input type="number" class="form-control text-center ngay-lam" value="24"></td>
+                            <td class="luong-ngay text-right" data-value="450000">450.000</td>
+                            <td class="tong-luong salary-cell">0</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">NV03</td>
+                            <td>Lê Minh Châu</td>
+                            <td class="text-center">Nhân sự</td>
+                            <td class="text-center"><input type="number" class="form-control text-center ngay-lam" value="28"></td>
+                            <td class="luong-ngay text-right" data-value="480000">480.000</td>
+                            <td class="tong-luong salary-cell">0</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">NV04</td>
+                            <td>Phạm Văn Dũng</td>
+                            <td class="text-center">Trưởng phòng IT</td>
+                            <td class="text-center"><input type="number" class="form-control text-center ngay-lam" value="25"></td>
+                            <td class="luong-ngay text-right" data-value="700000">700.000</td>
+                            <td class="tong-luong salary-cell">0</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">NV05</td>
+                            <td>Nguyễn Thị Hồng</td>
+                            <td class="text-center">Thư ký</td>
+                            <td class="text-center"><input type="number" class="form-control text-center ngay-lam" value="27"></td>
+                            <td class="luong-ngay text-right" data-value="420000">420.000</td>
+                            <td class="tong-luong salary-cell">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-end text-muted">
+            <i class="fa-solid fa-info-circle me-1"></i> Dữ liệu chỉ mang tính chất minh họa. Vui lòng nhấn "Tính lương" để cập nhật kết quả.
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+
+<script>
+    let luongDaTinh = false;
+
+    // Hàm định dạng số tiền VND
+    function formatCurrency(number) {
+        return number.toLocaleString("vi-VN") + " ₫";
+    }
+
+    // === CHỨC NĂNG TÍNH LƯƠNG ===
+    document.getElementById("btnTinhLuong").addEventListener("click", function () {
+        const rows = document.querySelectorAll("#bangChamCong tr");
+        let tongLuongChuaTra = 0;
+
+        rows.forEach(row => {
+            const ngayLam = parseInt(row.querySelector(".ngay-lam").value) || 0;
+            // Lấy giá trị gốc từ data-value thay vì textContent để tránh lỗi định dạng
+            const luongNgay = parseInt(row.querySelector(".luong-ngay").getAttribute("data-value")) || 0; 
+            
+            const tongLuong = ngayLam * luongNgay;
+            
+            // Cập nhật tổng lương vào bảng
+            row.querySelector(".tong-luong").textContent = formatCurrency(tongLuong);
+            tongLuongChuaTra += tongLuong;
+        });
+
+        // Cập nhật KPI tổng lương
+        document.getElementById("kpiTotalSalary").textContent = formatCurrency(tongLuongChuaTra);
+
+        luongDaTinh = true;
+        alert("✅ Đã tính xong lương cho nhân viên! Tổng lương cần chi trả: " + formatCurrency(tongLuongChuaTra));
+    });
+
+    // === CHỨC NĂNG XUẤT EXCEL ===
+    document.getElementById("btnXuatLuong").addEventListener("click", async function () {
+        if (!luongDaTinh) {
+            alert("⚠️ Vui lòng tính lương trước khi xuất bảng!");
+            return;
+        }
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("BangLuong");
+
+        // Tiêu đề
+        const headers = ["Mã NV", "Họ tên", "Chức vụ", "Ngày làm việc", "Lương/ngày (VNĐ)", "Tổng lương (VNĐ)"];
+        worksheet.addRow(headers);
+
+        // Dữ liệu
+        document.querySelectorAll("#bangChamCong tr").forEach(row => {
+            const cells = [];
+            
+            // Lấy dữ liệu từ các cột
+            cells.push(row.cells[0].textContent.trim()); // Mã NV
+            cells.push(row.cells[1].textContent.trim()); // Họ tên
+            cells.push(row.cells[2].textContent.trim()); // Chức vụ
+            cells.push(row.cells[3].querySelector("input").value); // Ngày làm việc (lấy từ input)
+            
+            // Lấy giá trị Lương/ngày từ data-value để xuất số, không phải chuỗi định dạng
+            const luongNgayValue = parseInt(row.cells[4].getAttribute("data-value")); 
+            cells.push(luongNgayValue); 
+
+            // Lấy giá trị Tổng lương (cần chuyển từ chuỗi định dạng sang số)
+            const tongLuongText = row.cells[5].textContent.trim();
+            const tongLuongValue = parseInt(tongLuongText.replace(/[^0-9]/g, ''));
+            cells.push(tongLuongValue); 
+
+            worksheet.addRow(cells);
+        });
+        
+        // Cấu hình cột và định dạng
+        
+        // 1. Style Header
+        const headerRow = worksheet.getRow(1);
+        headerRow.height = 30;
+        headerRow.eachCell(cell => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1D72B8' } };
+            cell.font = { name: 'Calibri', color: { argb: 'FFFFFF' }, bold: true, size: 12 };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+        });
+
+        // 2. Style Dữ liệu và Định dạng tiền tệ
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber > 1) {
+                const isEven = rowNumber % 2 === 0;
+                const bgColor = isEven ? 'F8F8F8' : 'FFFFFF';
+                row.height = 25;
+                
+                row.eachCell((cell, colNumber) => {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bgColor } };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+                    
+                    // Định dạng tiền tệ cho cột Lương/ngày (Cột E - số 5) và Tổng lương (Cột F - số 6)
+                    if (colNumber === 5 || colNumber === 6) {
+                        cell.numFmt = '#,##0 " ₫"';
+                        cell.alignment = { vertical: 'middle', horizontal: 'right' };
+                    }
+                    
+                    // Định dạng ngày làm việc (Cột D - số 4)
+                    if (colNumber === 4) {
+                        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    }
+                });
+            }
+        });
+
+        // 3. Auto Width
+        worksheet.columns.forEach(column => {
+            let maxLength = 0;
+            column.eachCell({ includeEmpty: true }, cell => {
+                const text = cell.value ? cell.value.toString() : "";
+                // Chỉ lấy chiều dài của Mã NV, Họ Tên, Chức vụ
+                if (column.number <= 3) {
+                    maxLength = Math.max(maxLength, text.length);
+                }
+            });
+            // Thiết lập độ rộng tối thiểu cho các cột
+            if (column.number === 2) { column.width = 25; } // Họ tên
+            else if (column.number === 3) { column.width = 15; } // Chức vụ
+            else if (column.number === 4) { column.width = 15; } // Ngày làm
+            else if (column.number === 5) { column.width = 20; } // Lương/ngày
+            else if (column.number === 6) { column.width = 20; } // Tổng lương
+            else { column.width = maxLength + 3; }
+        });
+
+
+        // Xuất file
+        const buffer = await workbook.xlsx.writeBuffer();
+        saveAs(new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "Bang_Luong_" + new Date().toISOString().slice(0, 10) + ".xlsx");
+        alert("📤 Xuất bảng lương thành công!");
+    });
+</script>

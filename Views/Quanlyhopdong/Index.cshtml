@@ -1,0 +1,102 @@
+@{
+ViewData["Title"] = "Quản Lý Hợp Đồng Nhân Sự";
+Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<!-- CSS -->
+
+<link rel="stylesheet" href="~/css/Quanlyhopdong.css" />
+    <div class="container">
+        <div class="header">
+            <h2>Quản lý Hợp đồng Lao động</h2>
+            <button class="btn btn-primary" onclick="openForm()">+ Thêm hợp đồng mới</button>
+        </div>
+
+        <div class="mb-3 d-flex gap-2">
+            <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo tên nhân viên hoặc mã hợp đồng...">
+            <select class="form-select" id="filterStatus">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Còn hiệu lực">Còn hiệu lực</option>
+                <option value="Hết hạn">Hết hạn</option>
+                <option value="Sắp hết hạn">Sắp hết hạn</option>
+            </select>
+        </div>
+
+        <table class="table table-bordered table-striped align-middle text-center">
+            <thead>
+                <tr>
+                    <th>Mã HĐ</th>
+                    <th>Tên nhân viên</th>
+                    <th>Loại hợp đồng</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Tình trạng</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="contractTable">
+                <tr>
+                    <td>HD001</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>Toàn thời gian</td>
+                    <td>01/01/2024</td>
+                    <td>01/01/2025</td>
+                    <td>Còn hiệu lực</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning">Sửa</button>
+                        <button class="btn btn-sm btn-danger">Xóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>HD002</td>
+                    <td>Trần Thị B</td>
+                    <td>Thử việc</td>
+                    <td>15/02/2024</td>
+                    <td>15/05/2024</td>
+                    <td>Hết hạn</td>
+                    <td>
+                        <button class="btn btn-sm btn-success">Gia hạn</button>
+                        <button class="btn btn-sm btn-danger">Xóa</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeForm()"></div>
+
+    <div class="form-popup" id="contractForm">
+        <h4>Thêm hợp đồng mới</h4>
+        <form id="newContractForm">
+            <div class="mb-3">
+                <label class="form-label">Tên nhân viên</label>
+                <input type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Loại hợp đồng</label>
+                <select class="form-select">
+                    <option>Thử việc</option>
+                    <option>Xác định thời hạn</option>
+                    <option>Không xác định thời hạn</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ngày bắt đầu</label>
+                <input type="date" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ngày kết thúc</label>
+                <input type="date" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mức lương cơ bản</label>
+                <input type="number" class="form-control" placeholder="VNĐ">
+            </div>
+            <div class="text-end">
+                <button type="button" class="btn btn-secondary" onclick="closeForm()">Hủy</button>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </div>
+        </form>
+    </div>
+     <!-- JavaScript tùy chỉnh -->
+  <script src="~/js/Quanlyhopdong.js"></script>

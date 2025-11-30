@@ -1,0 +1,220 @@
+@{
+    ViewData["Title"] = "Quản lý chấm công nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --main-blue: #1d72b8;
+        --dark-blue: #155d8b;
+        --light-bg: #f8f9fa;
+    }
+    body {
+        background-color: var(--light-bg);
+        font-family: "Segoe UI", sans-serif;
+    }
+    .topbar {
+        background: linear-gradient(90deg, var(--main-blue), var(--dark-blue));
+        color: white;
+        padding: 14px 24px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .table th {
+        background-color: var(--main-blue);
+        color: white;
+        text-align: center;
+    }
+    .card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        background: white;
+    }
+    .salary-cell {
+        font-weight: 600;
+        color: #1379c7;
+    }
+</style>
+
+<div class="topbar">
+    <div>🕒 Quản lý chấm công nhân viên - Hệ thống NTV</div>
+    <a asp-controller="Home" asp-action="Index">← Quay lại Dashboard</a>
+</div>
+
+<div class="container mt-5">
+    <div class="card p-4">
+        <h3 class="text-center mb-4 text-primary">BẢNG CHẤM CÔNG NHÂN VIÊN</h3>
+
+        <!-- Form thêm nhân viên -->
+        <div class="card p-3 mb-4 bg-light">
+            <h5 class="fw-bold">➕ Thêm nhân viên</h5>
+            <div class="row g-3 mt-1">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Mã NV</label>
+                    <input id="maNV" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Họ tên</label>
+                    <input id="tenNV" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Ngày sinh</label>
+                    <input id="ngaySinh" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Chức vụ</label>
+                    <input id="chucVu" class="form-control" />
+                </div>
+
+                <div class="col-md-12 d-flex justify-content-end">
+                    <button onclick="themNhanVien()" class="btn btn-success px-4">Thêm nhân viên</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút thao tác -->
+        <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-success" id="btnTinhCong">🧮 Tính công</button>
+            <button class="btn btn-primary" id="btnXuatExcel">📤 Xuất Excel</button>
+            <button class="btn btn-danger" id="btnXuatPDF">📄 Xuất PDF</button>
+            <button class="btn btn-secondary" id="btnXuatCSV">📑 Xuất CSV</button>
+            <button class="btn btn-dark" id="btnXuatWord">📘 Xuất Word</button>
+        </div>
+
+        <!-- Bảng chấm công -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle text-center" id="tableChamCong">
+                <thead>
+                    <tr>
+                        <th>Mã NV</th>
+                        <th>Họ tên</th>
+                        <th>Ngày sinh</th>
+                        <th>Chức vụ</th>
+                        <th>Ngày làm việc</th>
+                        <th>Ngày nghỉ</th>
+                        <th>Tổng công</th>
+                    </tr>
+                </thead>
+                <tbody id="bangChamCong">
+                    <tr>
+                        <td>NS01</td>
+                        <td>Nguyễn Văn A</td>
+                        <td>1999-05-12</td>
+                        <td>Nhân viên</td>
+                        <td><input type="number" class="form-control text-center ngay-lam" value="26"></td>
+                        <td><input type="number" class="form-control text-center ngay-nghi" value="4"></td>
+                        <td class="tong-cong salary-cell">22</td>
+                    </tr>
+                    <tr>
+                        <td>NS02</td>
+                        <td>Trần Thị B</td>
+                        <td>2000-11-20</td>
+                        <td>Kế toán</td>
+                        <td><input type="number" class="form-control text-center ngay-lam" value="24"></td>
+                        <td><input type="number" class="form-control text-center ngay-nghi" value="3"></td>
+                        <td class="tong-cong salary-cell">21</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Thư viện -->
+<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// ➕ Thêm nhân viên
+function themNhanVien() {
+    const ma = document.getElementById('maNV').value.trim();
+    const ten = document.getElementById('tenNV').value.trim();
+    const sinh = document.getElementById('ngaySinh').value;
+    const chuc = document.getElementById('chucVu').value.trim();
+
+    if (!ma || !ten || !sinh || !chuc) {
+        alert('⚠ Vui lòng nhập đầy đủ thông tin!');
+        return;
+    }
+
+    const row = `<tr>
+        <td>${ma}</td>
+        <td>${ten}</td>
+        <td>${sinh}</td>
+        <td>${chuc}</td>
+        <td><input type="number" class="form-control text-center ngay-lam" value="26"></td>
+        <td><input type="number" class="form-control text-center ngay-nghi" value="4"></td>
+        <td class="tong-cong salary-cell">0</td>
+    </tr>`;
+
+    document.getElementById('bangChamCong').insertAdjacentHTML('beforeend', row);
+    alert('✅ Đã thêm nhân viên!');
+}
+
+// 🧮 Tính công
+document.getElementById('btnTinhCong').onclick = () => {
+    document.querySelectorAll("#bangChamCong tr").forEach(row => {
+        const lam = parseInt(row.querySelector(".ngay-lam").value) || 0;
+        const nghi = parseInt(row.querySelector(".ngay-nghi").value) || 0;
+        row.querySelector(".tong-cong").textContent = lam - nghi;
+    });
+    alert("✔ Đã tính công!");
+};
+
+// 📑 Xuất CSV
+document.getElementById('btnXuatCSV').onclick = () => {
+    let csv = "Mã NV,Họ tên,Ngày sinh,Chức vụ,Ngày làm,Ngày nghỉ,Tổng công\n";
+    document.querySelectorAll("#bangChamCong tr").forEach(row => {
+        const cells = [...row.querySelectorAll("td")].map(td => td.innerText.replace(/,/g,";"));
+        csv += cells.join(",") + "\n";
+    });
+    const blob = new Blob([csv], {type: "text/csv"});
+    saveAs(blob, "ChamCong.csv");
+};
+
+// 📤 Xuất Excel
+document.getElementById('btnXuatExcel').onclick = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Cham Cong");
+    sheet.addRow(["Mã NV","Họ tên","Ngày sinh","Chức vụ","Ngày làm","Ngày nghỉ","Tổng công"]);
+
+    document.querySelectorAll("#bangChamCong tr").forEach(row => {
+        const data = [...row.querySelectorAll("td")].map(td => td.innerText);
+        sheet.addRow(data);
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), "ChamCong.xlsx");
+};
+
+// 📘 Xuất Word
+document.getElementById('btnXuatWord').onclick = () => {
+    let content = "BẢNG CHẤM CÔNG NHÂN VIÊN\n\n";
+    document.querySelectorAll("#bangChamCong tr").forEach(row => {
+        content += [...row.querySelectorAll("td")].map(td => td.innerText).join(" | ") + "\n";
+    });
+    const blob = new Blob([content], { type: "application/msword" });
+    saveAs(blob, "ChamCong.doc");
+};
+
+// 📄 Xuất PDF
+document.getElementById('btnXuatPDF').onclick = () => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    pdf.setFontSize(12);
+    pdf.text("BẢNG CHẤM CÔNG NHÂN VIÊN", 70, 10);
+
+    let y = 20;
+    document.querySelectorAll("#bangChamCong tr").forEach(row => {
+        pdf.text([...row.querySelectorAll("td")].map(td => td.innerText).join(" | "), 10, y);
+        y += 10;
+    });
+
+    pdf.save("ChamCong.pdf");
+};
+</script>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quản Lý Nhân Sự - Full CRUD & Export</title>
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- jsPDF + autotable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+body { background:#f6f7fb; }
+.card { border-radius:12px; }
+.thumb-img { width:48px; height:48px; object-fit:cover; border-radius:6px; }
+.table-responsive { max-height:60vh; overflow:auto; }
+.required::after { content:" *"; color:red; }
+</style>
+</head>
+<body>
+<div class="container-fluid p-4">
+  <!-- Header + Search -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="text-primary"><i class="fa fa-users me-2"></i>Quản Lý Nhân Sự</h3>
+    <input id="globalSearch" class="form-control form-control-sm" placeholder="Tìm kiếm..." style="max-width:300px;">
+  </div>
+
+  <!-- Form thêm nhân viên -->
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-2"><label class="form-label required">Mã NV</label><input id="ma" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label required">Họ Tên</label><input id="ten" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Giới Tính</label>
+          <select id="gioitinh" class="form-select"><option>Nam</option><option>Nữ</option></select>
+        </div>
+        <div class="col-md-2"><label class="form-label">Ngày Sinh</label><input id="ngaysinh" type="date" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">SĐT</label><input id="sdt" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">CCCD</label><input id="cccd" class="form-control" /></div>
+
+        <div class="col-md-3"><label class="form-label">Email</label><input id="email" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label required">Phòng Ban</label>
+          <select id="phong" class="form-select">
+            <option>Phòng Kế Toán</option>
+            <option>Phòng Nhân Sự</option>
+            <option>Phòng Kỹ Thuật</option>
+            <option>Marketing</option>
+          </select>
+        </div>
+        <div class="col-md-2"><label class="form-label">Ngày Vào Làm</label><input id="ngayvaolam" type="date" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Chức Vụ</label><input id="chucvu" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Lương</label><input id="luong" type="number" min="0" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Trình Độ</label><input id="trinhdo" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Địa Chỉ</label><input id="diachi" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Ảnh</label><input id="anh" type="file" accept="image/*" class="form-control" /></div>
+
+        <div class="col-md-3 d-flex justify-content-end">
+          <button id="btnAdd" class="btn btn-success me-2"><i class="fa fa-plus me-1"></i>Thêm</button>
+          <button id="btnClear" class="btn btn-outline-secondary">Xóa form</button>
+        </div>
+      </div>
+
+      <!-- Filter + Export -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="d-flex gap-2">
+          <select id="filterPhong" class="form-select form-select-sm" style="width:200px;">
+            <option value="all">— Tất cả phòng ban —</option>
+            <option>Phòng Kế Toán</option>
+            <option>Phòng Nhân Sự</option>
+            <option>Phòng Kỹ Thuật</option>
+            <option>Marketing</option>
+          </select>
+       <div class="d-flex gap-2 mb-3">
+    <button class="btn btn-success" onclick="exportExcel()">
+        📤 Xuất Excel
+    </button>
+
+    <button class="btn btn-danger" onclick="exportPDF()">
+        📄 Xuất PDF
+    </button>
+
+    <button class="btn btn-secondary" onclick="exportCSV()">
+        📑 Xuất CSV
+    </button>
+
+    <button class="btn btn-dark" onclick="exportWord()">
+        📘 Xuất Word
+    </button>
+</div>
+
+        </div>
+        <div class="text-muted small">Tổng: <span id="countTotal">0</span> nhân viên</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card shadow-sm">
+    <div class="card-body table-responsive">
+      <table id="tblNhanVien" class="table table-bordered table-hover align-middle text-center">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th>STT</th><th>Ảnh</th><th>Mã NV</th><th>Họ Tên</th><th>Giới Tính</th>
+            <th>Ngày Sinh</th><th>Phòng Ban</th><th>Chức Vụ</th><th>Ngày Vào</th>
+            <th>SĐT</th><th>CCCD</th><th>Email</th><th>Địa Chỉ</th><th>Lương</th><th>Trình Độ</th><th>HĐ</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyNV"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header bg-warning"><h5 class="modal-title">Sửa Nhân Viên</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+<div class="modal-body">
+<form id="formEdit"><input type="hidden" id="editIndex">
+<div class="row g-2">
+<div class="col-md-4"><label>Mã NV</label><input id="edit_ma" class="form-control"></div>
+<div class="col-md-4"><label>Họ Tên</label><input id="edit_ten" class="form-control"></div>
+<div class="col-md-4"><label>Giới Tính</label><select id="edit_gioitinh" class="form-select"><option>Nam</option><option>Nữ</option></select></div>
+<div class="col-md-4"><label>Ngày Sinh</label><input id="edit_ngaysinh" type="date" class="form-control"></div>
+<div class="col-md-4"><label>Phòng Ban</label><select id="edit_phong" class="form-select">
+<option>Phòng Kế Toán</option><option>Phòng Nhân Sự</option><option>Phòng Kỹ Thuật</option><option>Marketing</option></select></div>
+<div class="col-md-4"><label>Ngày Vào Làm</label><input id="edit_ngayvaolam" type="date" class="form-control"></div>
+<div class="col-md-4"><label>SĐT</label><input id="edit_sdt" class="form-control"></div>
+<div class="col-md-4"><label>CCCD</label><input id="edit_cccd" class="form-control"></div>
+<div class="col-md-4"><label>Email</label><input id="edit_email" class="form-control"></div>
+<div class="col-md-6"><label>Địa Chỉ</label><input id="edit_diachi" class="form-control"></div>
+<div class="col-md-3"><label>Chức Vụ</label><input id="edit_chucvu" class="form-control"></div>
+<div class="col-md-3"><label>Lương</label><input id="edit_luong" type="number" min="0" class="form-control"></div>
+<div class="col-md-6"><label>Trình Độ</label><input id="edit_trinhdo" class="form-control"></div>
+<div class="col-md-6"><label>Ảnh</label><input id="edit_anh" type="file" accept="image/*" class="form-control"><div class="mt-2"><img id="edit_preview" style="max-width:140px;border-radius:8px;"></div></div>
+</div></form>
+</div>
+<div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+<button class="btn btn-warning" id="saveEditBtn">Lưu thay đổi</button></div>
+</div></div></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let employees = [];
+
+function formatDate(d){ if(!d) return ''; let x=new Date(d); return isNaN(x)?d:(`${String(x.getDate()).padStart(2,'0')}/${String(x.getMonth()+1).padStart(2,'0')}/${x.getFullYear()}`); }
+function escapeHtml(t){ if(t==null) return ''; return String(t).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+function readImage(file){ return new Promise((res,rej)=>{ if(!file) return res(''); let r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=e=>rej(e); r.readAsDataURL(file); }); }
+
+function renderTable(){
+  const tbody=document.getElementById('tbodyNV');
+  const filter=document.getElementById('filterPhong').value;
+  const q=document.getElementById('globalSearch').value.trim().toLowerCase();
+  let rows=employees.map((e,i)=>({...e,idx:i}));
+  if(filter!=='all') rows=rows.filter(r=>r.phong.toLowerCase()===filter.toLowerCase());
+  if(q) rows=rows.filter(r=>[r.ma,r.ten,r.sdt,r.cccd,r.email].some(f=>f?.toLowerCase().includes(q)));
+  tbody.innerHTML=rows.map((r,i)=>`<tr>
+    <td>${i+1}</td>
+    <td>${r.anh?`<img src="${r.anh}" class="thumb-img">`:""}</td>
+    <td>${escapeHtml(r.ma)}</td><td>${escapeHtml(r.ten)}</td><td>${escapeHtml(r.gioitinh)}</td>
+    <td>${escapeHtml(formatDate(r.ngaysinh))}</td><td>${escapeHtml(r.phong)}</td><td>${escapeHtml(r.chucvu)}</td>
+    <td>${escapeHtml(formatDate(r.ngayvaolam))}</td><td>${escapeHtml(r.sdt)}</td><td>${escapeHtml(r.cccd)}</td>
+    <td>${escapeHtml(r.email)}</td><td>${escapeHtml(r.diachi)}</td>
+    <td>${r.luong?Number(r.luong).toLocaleString('vi-VN'):""}</td><td>${escapeHtml(r.trinhdo)}</td>
+    <td>
+      <button class="btn btn-sm btn-info me-1" onclick="viewDetail(${r.idx})"><i class="fa fa-eye"></i></button>
+      <button class="btn btn-sm btn-warning me-1" onclick="openEdit(${r.idx})"><i class="fa fa-pen"></i></button>
+      <button class="btn btn-sm btn-danger" onclick="removeEmployee(${r.idx})"><i class="fa fa-trash"></i></button>
+    </td>
+  </tr>`).join('');
+  document.getElementById('countTotal').innerText=employees.length;
+}
+
+document.getElementById('btnAdd').addEventListener('click',async()=>{
+  const ma=document.getElementById('ma').value.trim();
+  const ten=document.getElementById('ten').value.trim();
+  if(!ma||!ten){alert('Nhập Mã & Họ Tên'); return;}
+  const file=document.getElementById('anh').files[0];
+  const anh=await readImage(file);
+  employees.push({
+    ma,ten,gioitinh:document.getElementById('gioitinh').value,
+    ngaysinh:document.getElementById('ngaysinh').value,
+    phong:document.getElementById('phong').value,
+    ngayvaolam:document.getElementById('ngayvaolam').value,
+    sdt:document.getElementById('sdt').value,
+    cccd:document.getElementById('cccd').value,
+    email:document.getElementById('email').value,
+    diachi:document.getElementById('diachi').value,
+    chucvu:document.getElementById('chucvu').value,
+    luong:document.getElementById('luong').value,
+    trinhdo:document.getElementById('trinhdo').value,
+    anh
+  });
+  clearForm();
+  renderTable();
+});
+
+document.getElementById('btnClear').addEventListener('click',clearForm);
+function clearForm(){['ma','ten','ngaysinh','sdt','cccd','email','diachi','chucvu','luong','trinhdo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('gioitinh').selectedIndex=0; document.getElementById('phong').selectedIndex=0; document.getElementById('anh').value='';}
+
+function removeEmployee(idx){if(!confirm('Xóa nhân viên?')) return; employees.splice(idx,1); renderTable();}
+
+function openEdit(idx){
+  const e=employees[idx]; if(!e) return;
+  document.getElementById('editIndex').value=idx;
+  ['ma','ten','gioitinh','ngaysinh','phong','ngayvaolam','sdt','cccd','email','diachi','chucvu','luong','trinhdo'].forEach(k=>{
+    document.getElementById('edit_'+k).value=e[k]||'';
+  });
+  document.getElementById('edit_preview').src=e.anh||'';
+  document.getElementById('edit_anh').value='';
+  new bootstrap.Modal(document.getElementById('editModal')).show();
+}
+
+document.getElementById('edit_anh').addEventListener('change',function(){
+  const f=this.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=e=>document.getElementById('edit_preview').src=e.target.result; r.readAsDataURL(f);
+});
+
+document.getElementById('saveEditBtn').addEventListener('click',async()=>{
+  const idx=Number(document.getElementById('editIndex').value); if(isNaN(idx)) return;
+  const e=employees[idx]; if(!e) return;
+  ['ma','ten','gioitinh','ngaysinh','phong','ngayvaolam','sdt','cccd','email','diachi','chucvu','luong','trinhdo'].forEach(k=>e[k]=document.getElementById('edit_'+k).value);
+  const file=document.getElementById('edit_anh').files[0]; if(file) e.anh=await readImage(file);
+  bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+  renderTable();
+});
+
+function viewDetail(idx){
+  const e=employees[idx]; if(!e) return;
+  const tbody=document.getElementById('viewBody'); document.getElementById('view_anh').src=e.anh||'';
+  tbody.innerHTML=Object.entries(e).filter(([k])=>!['anh'].includes(k)).map(([k,v])=>`<tr><th>${k}</th><td>${escapeHtml(v)}</td></tr>`).join('');
+  new bootstrap.Modal(document.getElementById('viewModal'))?.show();
+}
+
+document.getElementById('globalSearch').addEventListener('input',renderTable);
+document.getElementById('filterPhong').addEventListener('change',renderTable);
+
+// EXPORT
+function downloadCSV(rows,filename){const bom='\uFEFF'; const csv=rows.map(r=>r.map(c=>`"${c||''}"`).join(',')).join('\n'); const blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);}
+function exportCSV(){const header=['Mã NV','Họ Tên','Giới Tính','Ngày Sinh','Phòng','Chức Vụ','Ngày Vào','SĐT','CCCD','Email','Địa Chỉ','Lương','Trình Độ']; const data=employees.map(e=>[e.ma,e.ten,e.gioitinh,e.ngaysinh,e.phong,e.chucvu,e.ngayvaolam,e.sdt,e.cccd,e.email,e.diachi,e.luong,e.trinhdo]); downloadCSV([header,...data],'NhanVien.csv');}
+function exportExcel(){const header=['Mã NV','Họ Tên','Giới Tính','Ngày Sinh','Phòng','Chức Vụ','Ngày Vào','SĐT','CCCD','Email','Địa Chỉ','Lương','Trình Độ']; const data=employees.map(e=>[e.ma,e.ten,e.gioitinh,e.ngaysinh,e.phong,e.chucvu,e.ngayvaolam,e.sdt,e.cccd,e.email,e.diachi,e.luong,e.trinhdo]); downloadCSV([header,...data],'NhanVien.xls');}
+function exportWord(){const html='<table border="1" style="border-collapse:collapse">'+employees.map(e=>`<tr>${Object.values(e).map(v=>`<td>${v||''}</td>`).join('')}</tr>`).join('')+'</table>'; const blob=new Blob([html],{type:'application/msword'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download='NhanVien.doc'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);}
+function exportPDF(){const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:'landscape'}); const columns=['Mã NV','Họ Tên','Giới Tính','Ngày Sinh','Phòng','Chức Vụ','Ngày Vào','SĐT','CCCD','Email','Địa Chỉ','Lương','Trình Độ']; const rows=employees.map(e=>[e.ma,e.ten,e.gioitinh,formatDate(e.ngaysinh),e.phong,e.chucvu,formatDate(e.ngayvaolam),e.sdt,e.cccd,e.email,e.diachi,e.luong,e.trinhdo]); doc.autoTable({head:[columns],body:rows,styles:{fontSize:8}}); doc.save('NhanVien.pdf');}
+
+// Seed demo
+employees.push({ma:'NV001',ten:'Nguyễn Văn A',gioitinh:'Nam',ngaysinh:'1990-01-01',phong:'Phòng Kế Toán',chucvu:'Kế Toán Trưởng',ngayvaolam:'2015-05-10',sdt:'0901234567',cccd:'012345678',email:'a@gmail.com',diachi:'Hà Nội',luong:12000000,trinhdo:'Đại Học',anh:''});
+employees.push({ma:'NV002',ten:'Trần Thị B',gioitinh:'Nữ',ngaysinh:'1992-07-12',phong:'Phòng Nhân Sự',chucvu:'Nhân Sự',ngayvaolam:'2018-03-15',sdt:'0912345678',cccd:'987654321',email:'b@gmail.com',diachi:'Hồ Chí Minh',luong:10000000,trinhdo:'Cao Đẳng',anh:''});
+renderTable();
+</script>
+</body>
+</html>
