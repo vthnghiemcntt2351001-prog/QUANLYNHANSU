@@ -2048,3 +2048,4 @@ D:\QUANLYNHANSU-main\obj\Debug\net9.0\refint\HTQuanLyNhanSu.dll
 D:\QUANLYNHANSU-main\obj\Debug\net9.0\HTQuanLyNhanSu.pdb
 D:\QUANLYNHANSU-main\obj\Debug\net9.0\HTQuanLyNhanSu.genruntimeconfig.cache
 D:\QUANLYNHANSU-main\obj\Debug\net9.0\ref\HTQuanLyNhanSu.dll
+D:\QUANLYNHANSU-main\obj\Debug\net9.0\HTQuanLyNhanSu.sourcelink.json

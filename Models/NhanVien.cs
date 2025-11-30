@@ -17,5 +17,9 @@ namespace HTQuanLyNhanSu.Models
 
         public int PhongBanId { get; set; }
         public PhongBan? PhongBan { get; set; }
+        public decimal? Luong { get; set; }
+        public string TrinhDo { get; set; } = string.Empty;
+        public string ChucVu { get; set; } = string.Empty;
+        public string Anh { get; set; } = string.Empty;
     }
 }

@@ -15,6 +15,24 @@ namespace HTQuanLyNhanSu.Data
         public DbSet<HopDongLaoDong> HopDongLaoDongs { get; set; }
         public DbSet<Luong> Luongs { get; set; }
         public DbSet<NghiPhep> NghiPheps { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // 1- nhiều: NhanVien - PhongBan
+            modelBuilder.Entity<NhanVien>()
+                .HasOne(nv => nv.PhongBan)      // 1 nhân viên có 1 phòng ban
+                .WithMany(pb => pb.NhanViens)   // 1 phòng ban có nhiều nhân viên
+                .HasForeignKey(nv => nv.PhongBanId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Quan hệ Trưởng phòng (tùy chọn)
+            modelBuilder.Entity<PhongBan>()
+                .HasOne(pb => pb.TruongPhong)
+                .WithMany() // TruongPhong không cần collection ngược
+                .HasForeignKey(pb => pb.TruongPhongId)
+                .OnDelete(DeleteBehavior.SetNull);
+        }
     
 }
 }
