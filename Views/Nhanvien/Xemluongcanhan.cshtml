@@ -73,12 +73,25 @@
     .card-net { background: linear-gradient(135deg, #0d6efd, #00b4d8); color: white; } /* Xanh dương đậm */
     
     /* Bảng chi tiết lương */
+    .salary-detail-table {
+        margin-top: 15px;
+        width: 100%;
+    }
     .salary-detail-table th {
         background-color: #e9ecef;
         color: #343a40;
         text-align: center;
         padding: 15px 10px;
         font-weight: 600;
+    }
+    .salary-detail-table td {
+        text-align: center;
+    }
+    .salary-detail-table .text-right {
+        text-align: right;
+    }
+    .salary-detail-table .detail-amount {
+        font-weight: 700;
     }
 
     .salary-detail-table tbody tr:hover {
@@ -95,29 +108,30 @@
     }
 </style>
 
+<div class="container-fluid salary-container">
 <div class="salary-header">
-    <div>
-        <h2>💰 Bảng Lương Cá Nhân</h2>
-        <p class="text-muted mb-0">Tra cứu và quản lý bảng lương hàng tháng của bạn.</p>
-    </div>
-    
-    <div class="d-flex align-items-center gap-10"> 
-        <select class="form-select" style="width: 170px;">
-            <option selected>Tháng 11/2025</option>
-            <option>Tháng 10/2025</option>
-            <option>Tháng 09/2025</option>
-            <option>Tháng 08/2025</option>
-        </select>
+        <div>
+            <h2>💰 Bảng Lương Cá Nhân</h2>
+            <p class="text-muted mb-0">Tra cứu và quản lý bảng lương hàng tháng của bạn.</p>
+        </div>
         
-        <button class="btn btn-primary" id="btnExportPdf">
-            <i class="fa-solid fa-file-pdf me-1"></i> Xuất PDF
-        </button>
-        
-        <button class="btn btn-outline-primary" id="btnRefresh">
-            <i class="fa-solid fa-arrow-rotate-right"></i> Làm mới
-        </button>
+        <div class="d-flex align-items-center gap-10"> 
+            <select class="form-select" style="width: 170px;">
+                <option selected>Tháng 11/2025</option>
+                <option>Tháng 10/2025</option>
+                <option>Tháng 09/2025</option>
+                <option>Tháng 08/2025</option>
+            </select>
+            
+            <button class="btn btn-primary" id="btnExportPdf">
+                <i class="fa-solid fa-file-pdf me-1"></i> Xuất PDF
+            </button>
+            
+            <button class="btn btn-outline-primary" id="btnRefresh">
+                <i class="fa-solid fa-arrow-rotate-right"></i> Làm mới
+            </button>
+        </div>
     </div>
-</div>
 
     <div class="salary-summary">
         
@@ -157,100 +171,61 @@
 
         <div class="col-lg-7">
             <div class="card shadow-sm h-100 p-4">
-                <ul class="nav nav-tabs mb-3" id="salaryTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="time-tab" data-bs-toggle="tab" data-bs-target="#time-details" type="button" role="tab">
-                            Chi tiết Chấm công
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="deduction-tab" data-bs-toggle="tab" data-bs-target="#deduction-details" type="button" role="tab">
-                            Chi tiết Khấu trừ
-                        </button>
-                    </li>
-                </ul>
-                
-                <div class="tab-content" id="salaryTabsContent">
-                    <div class="tab-pane fade show active" id="time-details" role="tabpanel">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped text-center salary-detail-table">
-                                <thead>
-                                    <tr>
-                                        <th>Ngày</th>
-                                        <th>Giờ làm</th>
-                                        <th>Giờ Tăng ca (OT)</th>
-                                        <th>Đi trễ/Về sớm (phút)</th>
-                                        <th>Ghi chú</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="timeDetailList">
-                                    <tr>
-                                        <td>01/11/2025</td>
-                                        <td>8</td>
-                                        <td>2</td>
-                                        <td>0</td>
-                                        <td>Làm thêm giờ dự án X</td>
-                                    </tr>
-                                    <tr>
-                                        <td>02/11/2025</td>
-                                        <td>8</td>
-                                        <td>0</td>
-                                        <td>15</td>
-                                        <td class="text-danger">Đi trễ 15 phút</td>
-                                    </tr>
-                                    <tr>
-                                        <td>03/11/2025</td>
-                                        <td>8</td>
-                                        <td>1</td>
-                                        <td>0</td>
-                                        <td>-</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <h5 class="text-primary fw-bold mb-3"><i class="fa-solid fa-list-check me-1"></i> Chi tiết Cấu phần Lương</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped align-middle salary-detail-table" id="tableLuongCaNhan">
+                        <thead>
+                            <tr>
+                                <th>Cấu phần</th>
+                                <th>Đơn vị/Số lượng</th>
+                                <th class="text-right">Số tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="luongDetailBody">
+<tr>
+                                <td class="text-start fw-bold text-success">Lương Cơ Bản (Gross)</td>
+                                <td></td>
+                                <td class="text-right detail-amount text-success">10,000,000 ₫</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Lương/Ngày làm việc</td>
+                                <td>24 ngày</td>
+                                <td class="text-right">416,667 ₫</td> </tr>
+                            <tr>
+                                <td class="text-start">Khen thưởng</td>
+                                <td>-</td>
+                                <td class="text-right">3,500,000 ₫</td> </tr>
+                            <tr>
+                                <td class="text-start text-danger">Kỷ luật</td>
+                                <td>3 lần</td>
+                                <td class="text-right text-danger">-500,000 ₫</td>
+                            </tr>
+                            <tr class="table-info">
+                                <td class="text-start fw-bold">TỔNG THU NHẬP GỘP</td>
+                                <td></td>
+                                <td class="text-right detail-amount text-primary">13,000,000 ₫</td>
+                            </tr>
+                            
+                            <tr>
+                                <td colspan="3" class="text-center fw-bold bg-light text-secondary">CÁC KHOẢN KHẤU TRỪ</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start text-danger">Tổng Khấu Trừ Khác</td>
+                                <td>-</td>
+                                <td class="text-right text-danger">-1,500,000 ₫</td> </tr>
+                            <tr class="table-danger">
+                                <td class="text-start fw-bold">TỔNG KHẤU TRỪ</td>
+                                <td></td>
+                                <td class="text-right detail-amount text-danger">1,500,000 ₫</td>
+                            </tr>
+                            
+                            <tr class="table-success">
+                                <td colspan="2" class="text-start fw-bold fs-5">THỰC NHẬN (NET)</td>
+                                <td class="text-right fw-bold fs-5 text-success">11,500,000 ₫</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     </div>
-
-                    <div class="tab-pane fade" id="deduction-details" role="tabpanel">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped text-start salary-detail-table">
-                                <thead>
-                                    <tr>
-                                        <th>Loại Khấu trừ</th>
-                                        <th>Tỷ lệ</th>
-                                        <th>Số tiền</th>
-                                        <th>Ghi chú</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Bảo hiểm Xã hội (BHXH)</td>
-                                        <td>8%</td>
-                                        <td class="text-danger">800,000 ₫</td>
-                                        <td>Theo quy định Nhà nước</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Thuế TNCN</td>
-                                        <td>5%</td>
-                                        <td class="text-danger">500,000 ₫</td>
-                                        <td>Khấu trừ tạm tính</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Phạt đi trễ</td>
-                                        <td>-</td>
-                                        <td class="text-danger">200,000 ₫</td>
-                                        <td>Tổng cộng 3 lần vi phạm</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="text-end fw-bold">Tổng Khấu Trừ</td>
-                                        <td class="text-danger fw-bold">1,500,000 ₫</td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
             </div>
         </div>
     </div>
@@ -258,8 +233,8 @@
     <div class="note mt-5">
         <p class="mb-1"><strong class="text-primary">💡 Công thức Tính Lương:</strong></p>
         <ul style="padding-left: 20px;">
-            <li>**Tổng Thu Nhập Gộp (Gross)** = Lương Cơ Bản + Phụ cấp + Thưởng + Thu nhập khác.</li>
-            <li>**Thực Nhận (Net)** = Tổng Thu Nhập Gộp - Tổng Khấu Trừ.</li>
+            <li>**Tổng Thu Nhập Gộp (Gross)** = Lương Cơ Bản + Thưởng + Thu nhập khác.</li>
+<li>**Thực Nhận (Net)** = Tổng Thu Nhập Gộp - Tổng Khấu Trừ.</li>
             <li>Vui lòng liên hệ Kế toán (Ext: 101) nếu có thắc mắc về các khoản tính toán.</li>
         </ul>
     </div>
@@ -281,7 +256,7 @@
         
         document.getElementById("btnExportPdf").addEventListener("click", function () {
             showToast("📥 Đang tạo tệp PDF bảng lương...", "info");
-            // Logic xuất PDF ở đây
+            // Logic xuất PDF ở đây (cần thư viện như html2pdf.js)
         });
 
 
@@ -290,12 +265,13 @@
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Lương Cơ Bản', 'Phụ cấp & Thưởng', 'Khấu Trừ'],
+                labels: ['Lương Cơ Bản', 'Khen thưởng', 'Khấu Trừ'],
                 datasets: [{
-                    data: [10000000, 3000000, 1500000], /* Dữ liệu: Base, Bonus/Allowance, Deduction */
+                    // Dữ liệu: Base: 10M, Khen thưởng - Kỷ luật (3.5M - 0.5M = 3M), Deduction: 1.5M
+                    data: [10000000, 3000000, 1500000], 
                     backgroundColor: [
                         '#0d6efd', /* Blue for Base */
-                        '#0f9d58', /* Green for Bonus/Allowance */
+                        '#0f9d58', /* Green for Khen thưởng/Net Income */
                         '#dc3545'  /* Red for Deduction */
                     ],
                     hoverOffset: 4,
@@ -317,7 +293,8 @@
                                     label += ': ';
                                 }
                                 if (context.parsed !== null) {
-                                    label += context.parsed.toLocaleString('vi-VN') + ' ₫';
+                                    // Định dạng tiền tệ
+                                    label += context.parsed.toLocaleString('vi-VN') + ' ₫'; 
                                 }
                                 return label;
                             }
@@ -329,4 +306,4 @@
 
     </script>
     
-    }
+}

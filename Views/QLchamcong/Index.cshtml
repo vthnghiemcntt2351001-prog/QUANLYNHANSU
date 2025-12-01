@@ -3,42 +3,57 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-    :root {
-        --main-blue: #1d72b8;
-        --dark-blue: #155d8b;
-        --light-bg: #f8f9fa;
-    }
-    body {
-        background-color: var(--light-bg);
-        font-family: "Segoe UI", sans-serif;
-    }
-    .topbar {
-        background: linear-gradient(90deg, var(--main-blue), var(--dark-blue));
-        color: white;
-        padding: 14px 24px;
-        font-weight: 600;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .table th {
-        background-color: var(--main-blue);
-        color: white;
-        text-align: center;
-    }
-    .card {
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        background: white;
-    }
-    .salary-cell {
-        font-weight: 600;
-        color: #1379c7;
-    }
-</style>
+
+
+    <style>
+        :root {
+            --main-blue: #1d72b8;
+            --dark-blue: #155d8b;
+            --light-bg: #f8f9fa;
+        }
+        body {
+            background-color: var(--light-bg);
+            font-family: "Segoe UI", sans-serif;
+        }
+        .topbar {
+            background: linear-gradient(90deg, var(--main-blue), var(--dark-blue));
+            color: white;
+            padding: 14px 24px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .topbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .table th {
+            background-color: var(--main-blue);
+            color: white;
+            text-align: center;
+        }
+        .card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: white;
+        }
+        .btn-primary {
+            background-color: var(--main-blue);
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+        }
+        .salary-cell {
+            font-weight: 600;
+            color: #1379c7;
+        }
+    </style>
+
 
 <div class="topbar">
     <div>🕒 Quản lý chấm công nhân viên - Hệ thống NTV</div>
@@ -49,50 +64,17 @@
     <div class="card p-4">
         <h3 class="text-center mb-4 text-primary">BẢNG CHẤM CÔNG NHÂN VIÊN</h3>
 
-        <!-- Form thêm nhân viên -->
-        <div class="card p-3 mb-4 bg-light">
-            <h5 class="fw-bold">➕ Thêm nhân viên</h5>
-            <div class="row g-3 mt-1">
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">Mã NV</label>
-                    <input id="maNV" class="form-control" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">Họ tên</label>
-                    <input id="tenNV" class="form-control" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">Ngày sinh</label>
-                    <input id="ngaySinh" type="date" class="form-control" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">Chức vụ</label>
-                    <input id="chucVu" class="form-control" />
-                </div>
-
-                <div class="col-md-12 d-flex justify-content-end">
-                    <button onclick="themNhanVien()" class="btn btn-success px-4">Thêm nhân viên</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nút thao tác -->
-        <div class="d-flex gap-2 mb-3">
+        <div class="d-flex justify-content-end mb-3">
             <button class="btn btn-success" id="btnTinhCong">🧮 Tính công</button>
-            <button class="btn btn-primary" id="btnXuatExcel">📤 Xuất Excel</button>
-            <button class="btn btn-danger" id="btnXuatPDF">📄 Xuất PDF</button>
-            <button class="btn btn-secondary" id="btnXuatCSV">📑 Xuất CSV</button>
-            <button class="btn btn-dark" id="btnXuatWord">📘 Xuất Word</button>
+            <button class="btn btn-primary ms-2" id="btnXuatChamCong">📤 Xuất bảng chấm công</button>
         </div>
 
-        <!-- Bảng chấm công -->
         <div class="table-responsive">
             <table class="table table-bordered table-striped align-middle text-center" id="tableChamCong">
                 <thead>
                     <tr>
                         <th>Mã NV</th>
                         <th>Họ tên</th>
-                        <th>Ngày sinh</th>
                         <th>Chức vụ</th>
                         <th>Ngày làm việc</th>
                         <th>Ngày nghỉ</th>
@@ -101,22 +83,22 @@
                 </thead>
                 <tbody id="bangChamCong">
                     <tr>
-                        <td>NS01</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>1999-05-12</td>
-                        <td>Nhân viên</td>
-                        <td><input type="number" class="form-control text-center ngay-lam" value="26"></td>
-                        <td><input type="number" class="form-control text-center ngay-nghi" value="4"></td>
-                        <td class="tong-cong salary-cell">22</td>
+                        <td>NV01</td><td>Nguyễn Văn An</td><td>Nhân viên IT</td>
+                        <td><input type="number" class="form-control text-center ngay-lam" value="26" min="0" max="31"></td>
+                        <td><input type="number" class="form-control text-center ngay-nghi" value="4" min="0" max="31"></td>
+<td class="tong-cong salary-cell">0</td>
                     </tr>
                     <tr>
-                        <td>NS02</td>
-                        <td>Trần Thị B</td>
-                        <td>2000-11-20</td>
-                        <td>Kế toán</td>
+                        <td>NV02</td><td>Trần Thị Bích</td><td>Kế toán</td>
                         <td><input type="number" class="form-control text-center ngay-lam" value="24"></td>
+                        <td><input type="number" class="form-control text-center ngay-nghi" value="6"></td>
+                        <td class="tong-cong salary-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td>NV03</td><td>Lê Minh Châu</td><td>Nhân sự</td>
+                        <td><input type="number" class="form-control text-center ngay-lam" value="27"></td>
                         <td><input type="number" class="form-control text-center ngay-nghi" value="3"></td>
-                        <td class="tong-cong salary-cell">21</td>
+                        <td class="tong-cong salary-cell">0</td>
                     </tr>
                 </tbody>
             </table>
@@ -124,97 +106,92 @@
     </div>
 </div>
 
-<!-- Thư viện -->
-<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<script>
-// ➕ Thêm nhân viên
-function themNhanVien() {
-    const ma = document.getElementById('maNV').value.trim();
-    const ten = document.getElementById('tenNV').value.trim();
-    const sinh = document.getElementById('ngaySinh').value;
-    const chuc = document.getElementById('chucVu').value.trim();
+    <!-- Thư viện xuất Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
-    if (!ma || !ten || !sinh || !chuc) {
-        alert('⚠ Vui lòng nhập đầy đủ thông tin!');
-        return;
-    }
+    <script>
+        let chamCongDaTinh = false;
 
-    const row = `<tr>
-        <td>${ma}</td>
-        <td>${ten}</td>
-        <td>${sinh}</td>
-        <td>${chuc}</td>
-        <td><input type="number" class="form-control text-center ngay-lam" value="26"></td>
-        <td><input type="number" class="form-control text-center ngay-nghi" value="4"></td>
-        <td class="tong-cong salary-cell">0</td>
-    </tr>`;
+        // ✅ Tính công
+        document.getElementById("btnTinhCong").addEventListener("click", function () {
+            const rows = document.querySelectorAll("#bangChamCong tr");
+            rows.forEach(row => {
+                const ngayLam = parseInt(row.querySelector(".ngay-lam").value) || 0;
+                const ngayNghi = parseInt(row.querySelector(".ngay-nghi").value) || 0;
+                const tongCong = ngayLam - ngayNghi;
+                row.querySelector(".tong-cong").textContent = tongCong;
+            });
 
-    document.getElementById('bangChamCong').insertAdjacentHTML('beforeend', row);
-    alert('✅ Đã thêm nhân viên!');
-}
+            chamCongDaTinh = true;
+            alert("✅ Đã tính xong tổng công cho nhân viên!");
+        });
 
-// 🧮 Tính công
-document.getElementById('btnTinhCong').onclick = () => {
-    document.querySelectorAll("#bangChamCong tr").forEach(row => {
-        const lam = parseInt(row.querySelector(".ngay-lam").value) || 0;
-        const nghi = parseInt(row.querySelector(".ngay-nghi").value) || 0;
-        row.querySelector(".tong-cong").textContent = lam - nghi;
-    });
-    alert("✔ Đã tính công!");
-};
+        // ✅ Xuất bảng chấm công ra Excel
+        document.getElementById("btnXuatChamCong").addEventListener("click", async function () {
+            if (!chamCongDaTinh) {
+                alert("⚠️ Vui lòng tính công trước khi xuất bảng!");
+                return;
+            }
 
-// 📑 Xuất CSV
-document.getElementById('btnXuatCSV').onclick = () => {
-    let csv = "Mã NV,Họ tên,Ngày sinh,Chức vụ,Ngày làm,Ngày nghỉ,Tổng công\n";
-    document.querySelectorAll("#bangChamCong tr").forEach(row => {
-        const cells = [...row.querySelectorAll("td")].map(td => td.innerText.replace(/,/g,";"));
-        csv += cells.join(",") + "\n";
-    });
-    const blob = new Blob([csv], {type: "text/csv"});
-    saveAs(blob, "ChamCong.csv");
-};
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Bảng Chấm Công");
 
-// 📤 Xuất Excel
-document.getElementById('btnXuatExcel').onclick = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet("Cham Cong");
-    sheet.addRow(["Mã NV","Họ tên","Ngày sinh","Chức vụ","Ngày làm","Ngày nghỉ","Tổng công"]);
+            // Header
+            const headers = ["Mã NV", "Họ tên", "Chức vụ", "Ngày làm việc", "Ngày nghỉ", "Tổng công"];
+            worksheet.addRow(headers);
 
-    document.querySelectorAll("#bangChamCong tr").forEach(row => {
-        const data = [...row.querySelectorAll("td")].map(td => td.innerText);
-        sheet.addRow(data);
-    });
+            // Dữ liệu từ bảng
+            document.querySelectorAll("#bangChamCong tr").forEach(row => {
+                const cells = Array.from(row.querySelectorAll("td")).map(td => {
+                    const input = td.querySelector("input");
+                    return input ? input.value : td.textContent.trim();
+                });
+                worksheet.addRow(cells);
+            });
 
-    const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), "ChamCong.xlsx");
-};
+            // Style header
+            const headerRow = worksheet.getRow(1);
+headerRow.eachCell(cell => {
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1D72B8' } };
+                cell.font = { color: { argb: 'FFFFFF' }, bold: true };
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            });
 
-// 📘 Xuất Word
-document.getElementById('btnXuatWord').onclick = () => {
-    let content = "BẢNG CHẤM CÔNG NHÂN VIÊN\n\n";
-    document.querySelectorAll("#bangChamCong tr").forEach(row => {
-        content += [...row.querySelectorAll("td")].map(td => td.innerText).join(" | ") + "\n";
-    });
-    const blob = new Blob([content], { type: "application/msword" });
-    saveAs(blob, "ChamCong.doc");
-};
+            // Viền + màu xen kẽ
+            worksheet.eachRow((row, i) => {
+                row.eachCell(cell => {
+                    cell.border = {
+                        top: { style: 'thin', color: { argb: '000000' } },
+                        left: { style: 'thin', color: { argb: '000000' } },
+                        bottom: { style: 'thin', color: { argb: '000000' } },
+                        right: { style: 'thin', color: { argb: '000000' } }
+                    };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    if (i > 1) {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: i % 2 === 0 ? 'F2F2F2' : 'FFFFFF' }
+                        };
+                    }
+                });
+            });
 
-// 📄 Xuất PDF
-document.getElementById('btnXuatPDF').onclick = () => {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
-    pdf.setFontSize(12);
-    pdf.text("BẢNG CHẤM CÔNG NHÂN VIÊN", 70, 10);
+            // Auto width
+            worksheet.columns.forEach(col => {
+                let max = 0;
+                col.eachCell({ includeEmpty: true }, cell => {
+                    const text = cell.value ? cell.value.toString() : "";
+                    max = Math.max(max, text.length);
+                });
+                col.width = max + 3;
+            });
 
-    let y = 20;
-    document.querySelectorAll("#bangChamCong tr").forEach(row => {
-        pdf.text([...row.querySelectorAll("td")].map(td => td.innerText).join(" | "), 10, y);
-        y += 10;
-    });
-
-    pdf.save("ChamCong.pdf");
-};
-</script>
+            // Xuất file
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "Bang_Cham_Cong.xlsx");
+            alert("📤 Xuất bảng chấm công thành công!");
+        });
+    </script>
